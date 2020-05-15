@@ -22,7 +22,7 @@ The rules are guidelines and may be expanded by admins if needed at any time. In
 
 - `b)` While not a strict requirement, it's suggested to follow the server theme and build medieval style buildings, castles, and so on. I appreciate if you follow biome and server theme.
 
-- `c)` No hacks! Any mods that give you an unfair advantage is a hack. This includes minimap mods that show mobs and ore spawns in caves without exploring. Duping, flyhacks, exploiting glitches, and other hacks and mods are disallowed.
+- `c)` No hacks! Any mods that give you an unfair advantage is a hack. This includes minimap mods that show mobs and caves without exploring them. If you use a minimap mod, disable cave mode. Duping, flyhacks, exploiting glitches, and other hacks and mods are disallowed.
 
 - `d)` A server-wide map is made available publicly, but this is purely for convenience. While I will update it on request, do not spam me for the same thing.
 
