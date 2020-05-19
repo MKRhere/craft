@@ -26,14 +26,14 @@ The rules are guidelines and may be expanded by admins if needed at any time. In
 
 - `d)` A server-wide map is made available publicly, but this is purely for convenience. While I will update it on request, do not spam me for the same thing.
 
-- `e)` AFKing is not allowed. The server will kick you if you AFK for 5 minutes.
+- `e)` AFKing is not allowed. The server will kick you if you AFK for 5 minutes. Counter-measures are prohibited.
 
 - `f)` Building mob farms and automated crop farms is fine as long as it's server-friendly, in that it does not cause lag to everyone on the server. In case one of your contraptions is killing the server, remove it yourself, or an OP will.
 
-### `3)` Other players' bases
+### `3)` Player bases
 
-- `a)` Do not grief, obviously. If a region shows signs of having been occupied, don't damage or steal items. People spent time building stuff, so be respectful. You may only loot structures and villages not occupied by another player.
+- `a)` Do not grief, obviously. If a region shows signs of having been occupied, don't damage or steal items. People spent time building stuff, so be respectful. You may only loot structures and villages not occupied by another player. The map shows permanently occupied bases, but may not be exhaustive.
 
-- `b)` You can challenge, deal with, or otherwise trade territory with other players as you please, as long as any agreement is mutual. Individuals or factions may fight over occupied land if they both agree to terms.
+- `b)` You can challenge, deal with, or otherwise trade territory with other players as you please, as long as any agreement is mutual. Individuals or factions may fight over occupied land if they both agree to terms. You may not fight players in their base without mutual agreement.
 
 On the whole, enjoy playing and have common sense :)
