@@ -68,6 +68,7 @@ for (const service of services) {
 		createInterface({ input: stream });
 
 	createServer(client => {
+		// create TCP server to expose streams
 		client.unref();
 
 		client.on("error", e => console.error("[error]", e));
@@ -92,7 +93,7 @@ for (const service of services) {
 		);
 	}).listen(Number(port), ip);
 
-	spawned.stdout.on("data", chunk => {
+	const writeChunk = (chunk: Buffer) => {
 		const lines = String(chunk).split("\n");
 
 		if (std.count > 1000) {
@@ -104,19 +105,9 @@ for (const service of services) {
 		std.count += lines.length;
 
 		std.stream.write(lines.join("\n"));
-	});
+	};
 
-	spawned.stderr.on("data", chunk => {
-		const lines = String(chunk).split("\n");
+	spawned.stdout.on("data", writeChunk);
 
-		if (std.count > 1000) {
-			std.stream = getStdStream();
-
-			std.count = 0;
-		}
-
-		std.count += lines.length;
-
-		std.stream.write(lines.join("\n"));
-	});
+	spawned.stderr.on("data", writeChunk);
 }
