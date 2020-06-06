@@ -5,7 +5,7 @@ import { createServer } from "net";
 import { createInterface } from "readline";
 import { EOL } from "os";
 
-import load from "./loadConfig";
+import { config as load } from "./loadConfig";
 
 const { logs, proc, services } = load("config.json");
 
@@ -70,7 +70,7 @@ for (const service of services) {
 	createServer(client => {
 		client.unref();
 
-		client.on("error", console.error);
+		client.on("error", e => console.error("[error]", e));
 
 		const clientInput = rl(client);
 		const clientWriter = (line: string) => client.write(line + EOL);
@@ -90,7 +90,7 @@ for (const service of services) {
 				errors.removeListener("line", clientWriter)
 			),
 		);
-	});
+	}).listen(Number(port), ip);
 
 	spawned.stdout.on("data", chunk => {
 		const lines = String(chunk).split("\n");

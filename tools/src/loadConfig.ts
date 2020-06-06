@@ -1,31 +1,41 @@
 import { readFileSync } from "fs";
-import { join } from "path";
+import { resolve } from "path";
 
-type Service = {
+export type Service = {
 	name: string;
 	type?: "minecraft" | "ssh" | "any";
 	cmd: string;
 	pwd?: string;
 };
 
-type Config = {
+export type Config = {
 	logs: string;
 	proc: string;
 	services: Service[];
 };
 
-export default (filename: string) => {
+export type Proc = {
+	name: string;
+	ip: string;
+	port: string;
+};
+
+const load = (filepath: string) => {
 	try {
-		return Object.assign(
-			// defaults
-			{ logs: "./.logs", proc: "./.proc", services: [] },
-			// override
-			JSON.parse(readFileSync(join(process.cwd(), filename), "utf-8")),
-		) as Config;
-	} catch {
-		console.error(
-			"No config found or config malformed, create a config.json start launcher.",
+		return JSON.parse(
+			readFileSync(resolve(process.cwd(), filepath), "utf-8"),
 		);
+	} catch {
+		console.error("No config found or config malformed:", filepath);
 		process.exit(100);
 	}
 };
+
+export const config = (filepath: string) =>
+	Object.assign(
+		// defaults
+		{ logs: "./.logs", proc: "./.proc", services: [] },
+		load(filepath),
+	) as Config;
+
+export const proc = (filepath: string) => load(filepath) as Proc;
