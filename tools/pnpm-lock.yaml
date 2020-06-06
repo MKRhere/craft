@@ -1,0 +1,25 @@
+devDependencies:
+  '@types/node': 14.0.5
+  tslib: 2.0.0
+  typescript: 3.9.3
+lockfileVersion: 5.1
+packages:
+  /@types/node/14.0.5:
+    dev: true
+    resolution:
+      integrity: sha512-90hiq6/VqtQgX8Sp0EzeIsv3r+ellbGj4URKj5j30tLlZvRUpnAe9YbYnjl3pJM93GyXU0tghHhvXHq+5rnCKA==
+  /tslib/2.0.0:
+    dev: true
+    resolution:
+      integrity: sha512-lTqkx847PI7xEDYJntxZH89L2/aXInsyF2luSafe/+0fHOMjlBNXdH6th7f70qxLDhul7KZK0zC8V5ZIyHl0/g==
+  /typescript/3.9.3:
+    dev: true
+    engines:
+      node: '>=4.2.0'
+    hasBin: true
+    resolution:
+      integrity: sha512-D/wqnB2xzNFIcoBG9FG8cXRDjiqSTbG2wd8DMZeQyJlP1vfTkIxH4GKveWaEBYySKIg+USu+E+EDIR47SqnaMQ==
+specifiers:
+  '@types/node': ^14.0.5
+  tslib: ^2.0.0
+  typescript: ^3.9.3
