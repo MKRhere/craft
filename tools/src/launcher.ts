@@ -6,6 +6,7 @@ import { createInterface } from "readline";
 import { EOL } from "os";
 
 import { config as load } from "./loadConfig";
+import writeProc from "./writeProc";
 
 const { logs, proc, services } = load("config.json");
 
@@ -28,31 +29,11 @@ for (const service of services) {
 
 	console.log("[info] Spawning new service", service.name);
 
-	fs.writeFile(
-		resolve(procDir, service.name + ".json"),
-		JSON.stringify(
-			{
-				name: service.name,
-				ip,
-				port,
-			},
-			null,
-			"\t",
-		),
-	)
-		.then(() =>
-			console.log(
-				"[info] written config for " + service.name + " to proc",
-			),
-		)
-		.catch(e =>
-			console.error(
-				"[error] could not write config for " +
-					service.name +
-					" " +
-					e.message,
-			),
-		);
+	writeProc(service.name, resolve(procDir, service.name + ".json"), {
+		name: service.name,
+		ip,
+		port,
+	});
 
 	const spawned = spawn(cmd, args, { cwd: pwd, windowsHide: true });
 
