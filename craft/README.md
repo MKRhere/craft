@@ -18,7 +18,7 @@ The rules are guidelines and may be expanded by admins if needed at any time. In
 
 ### `2)` Play style
 
-- `a)` This server was started on easy difficulty, and encourages building and exploring.
+- `a)` This server is on normal difficulty, and encourages building and exploring.
 
 - `b)` While not a strict requirement, it's suggested to follow the server theme and build medieval style buildings, castles, and so on. I appreciate if you follow biome and server theme.
 
