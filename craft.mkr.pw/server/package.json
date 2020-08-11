@@ -1,0 +1,39 @@
+{
+	"name": "@mkrcraft/server",
+	"version": "0.0.1",
+	"description": "mkr/craft player webapp server",
+	"main": "dist",
+	"scripts": {
+		"build": "tsc --importHelpers",
+		"build:w": "tsc --importHelpers -w"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+ssh://git@github.com/mkrhere/craft.git"
+	},
+	"keywords": [
+		"mkr/craft",
+		"server",
+		"minecraft",
+		"stats"
+	],
+	"author": "Feathers Studio <@feathersstudio> (https://feathers.studio)",
+	"contributors": [
+		"Muthu Kumar <@MKRhere> (https://mkr.pw)"
+	],
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/mkrhere/craft/issues"
+	},
+	"homepage": "https://github.com/mkrhere/craft#readme",
+	"devDependencies": {
+		"@types/express": "^4.17.7",
+		"@types/node": "^14.0.14",
+		"tslib": "^2.0.0",
+		"typescript": "^3.9.5"
+	},
+	"dependencies": {
+		"body-parser": "^1.19.0",
+		"express": "^4.17.1"
+	}
+}
