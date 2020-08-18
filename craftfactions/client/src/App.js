@@ -1,15 +1,19 @@
-import React from "react";
+import React, { useState } from "react";
 import { Router } from "@reach/router";
 
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 
 function App() {
-	const loggedIn = true;
+	const [loggedIn, setLoggedIn] = useState(false);
 
 	return (
 		<Router>
-			{!loggedIn ? <Login path="/" /> : <Dashboard path="/" />}
+			{!loggedIn ? (
+				<Login path="/" login={() => setLoggedIn(true)} />
+			) : (
+				<Dashboard path="/" />
+			)}
 		</Router>
 	);
 }

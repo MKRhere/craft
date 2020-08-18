@@ -28,8 +28,8 @@ const img = css`
 	margin-bottom: 4rem;
 `;
 
-function Login() {
-	const handleSubmit = e => e.preventDefault();
+function Login({ login }) {
+	const handleSubmit = e => (e.preventDefault(), login());
 
 	return (
 		<form className={container}>
@@ -37,7 +37,7 @@ function Login() {
 			<Input
 				type="text"
 				placeholder="Enter username"
-				spellcheck="false"></Input>
+				spellCheck={false}></Input>
 			<Button onClick={handleSubmit}>Login</Button>
 		</form>
 	);
