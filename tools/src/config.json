@@ -1,0 +1,28 @@
+{
+	"logs": "./logs",
+	"procdir": "./.proc",
+	"services": [
+		{
+			"name": "craft-server",
+			"type": "minecraft",
+			"cmd": "tmc botwrap",
+			"pwd": "."
+		},
+		{
+			"name": "craft-tunnel",
+			"type": "ssh-tunnel",
+			"cmd": "ssh -NT -o ServerAliveInterval=60 -R 0.0.0.0:25565:localhost:25565 mkr@craft.mkr.pw"
+		},
+		{
+			"name": "map-tunnel",
+			"type": "any",
+			"cmd": "ssh -NT -o ServerAliveInterval=60 -R 0.0.0.0:25500:localhost:25500 mkr@craft.mkr.pw"
+		},
+		{
+			"name": "map-server",
+			"type": "any",
+			"cmd": "serve",
+			"pwd": "./map/world"
+		}
+	]
+}
