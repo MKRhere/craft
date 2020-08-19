@@ -3,6 +3,7 @@ import { Router } from "@reach/router";
 
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
+import Stats from "./pages/Stats";
 
 function App() {
 	const [loggedIn, setLoggedIn] = useState(false);
@@ -14,6 +15,7 @@ function App() {
 			) : (
 				<Dashboard path="/" />
 			)}
+			<Stats path="/stats/:id" />
 		</Router>
 	);
 }

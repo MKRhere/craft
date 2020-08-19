@@ -12,6 +12,7 @@ const container = css`
 	min-height: 100vh;
 	max-width: 1400px;
 	margin: auto;
+	padding-top: 5rem;
 
 	& > * {
 		padding: 0.5rem;
