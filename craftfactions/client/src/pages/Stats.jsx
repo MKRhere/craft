@@ -13,7 +13,9 @@ function Stats() {
 	   .then(res => {
         const statss = res.stats["minecraft:custom"]
         
-      })
+	  })
+	  
+	  useEffect(callAPI, []);
   
 	
 	return (
