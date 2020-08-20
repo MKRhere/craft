@@ -6,7 +6,7 @@ import Input from "../components/Input";
 import Axios from "axios";
 
 function Stats() {
-const [Statss,setStatss] = useState([]);
+const [statss,setStatss] = useState([]);
 
 	const callAPI = () => 
 	   axios
@@ -14,11 +14,11 @@ const [Statss,setStatss] = useState([]);
 	   .then(res => res.data)
 			.then(res => {
 				const stats = res.stats["minecraft:custom"]
-				const stats1 = stats.map(x => ({
-					...x,
-					
-				}));
-				setStatss(stats1);
+				Object.keys(stats).forEach(function(key) {
+					console.table('Key : ' + key + ', Value : ' + stats[key])
+				  })
+
+				setStatss(stats);
 			});
 	  
 	  useEffect(callAPI, []);
@@ -26,7 +26,7 @@ const [Statss,setStatss] = useState([]);
 	
 	return (
 		<div className="wrapper">
-			{callAPI()}
+			{statss}
 		</div>
 	);
 }
