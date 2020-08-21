@@ -17,22 +17,14 @@ const [statss,setStatss] = useState([]);
 				console.log(res);
 				const stats = res.stats["minecraft:custom"];
 				console.log(stats);
-				//const listItems = stats.map((key) => <li key={key}>{stats[key]}</li>);
-				<ul>{Object.keys(stats).map((key, i) => (
+				const list =Object.keys(stats).map((key, i) => (
 					<p key={i}>
 					  <span>Key Name: {key}</span>
 					  <span>Value: {stats[key]}</span>
 					</p>
-				  ))}
-				  </ul>
-				/*{stats.map((key, i) => (
-					<p key={i}>
-					  <span>Key Name: {key}</span>
-					  <span>Value: {stats[key]}</span>
-					</p>
-					  
-				  ))}*/
-				setStatss(stats);
+				  ))
+				
+				setStatss(list);
 			});
 	  
 	  useEffect(callAPI, []);
@@ -40,7 +32,7 @@ const [statss,setStatss] = useState([]);
 	
 	return (
 		<div className="wrapper">
-			{statss}
+			{callAPI}
 		</div>
 	);
 }
