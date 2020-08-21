@@ -9,6 +9,19 @@ import { useEffect } from "react";
 function Stats() {
 const [statss,setStatss] = useState([]);
 
+const mystyle = {
+	margin: "auto",
+	width: "50%",
+	display: "flex"
+  };
+
+const mystyle1 = {
+	flex: "1",
+};
+
+const mystyle2 = {
+	textAlign: "right"	
+};
 	const callAPI = () => 
 	   axios
 	   .get('https://mkr.thefeathers.in/player/5f39b87881505ced8b9b8e92/stats')
@@ -18,9 +31,9 @@ const [statss,setStatss] = useState([]);
 				const stats = res.stats["minecraft:custom"];
 				console.log(stats);
 				const list =Object.keys(stats).map((key, i) => (
-					<p key={i}>
-					  <span>Key Name: {key}</span>
-					  <span>Value: {stats[key]}</span>
+					<p key={i} style={mystyle}>
+					  <div style={mystyle1}> {key}</div>
+					  <div style={mystyle2}> {stats[key]}</div>
 					</p>
 				  ))
 				
@@ -32,7 +45,7 @@ const [statss,setStatss] = useState([]);
 	
 	return (
 		<div className="wrapper">
-			{callAPI}
+			{statss}
 		</div>
 	);
 }
