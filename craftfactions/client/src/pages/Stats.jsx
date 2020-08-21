@@ -14,16 +14,24 @@ const [statss,setStatss] = useState([]);
 	   .get('https://mkr.thefeathers.in/player/5f39b87881505ced8b9b8e92/stats')
 	   .then(res => res.data)
 			.then(res => {
+				console.log(res);
 				const stats = res.stats["minecraft:custom"];
-				
+				console.log(stats);
 				//const listItems = stats.map((key) => <li key={key}>{stats[key]}</li>);
-				{stats.map((key, i) => (
+				<ul>{Object.keys(stats).map((key, i) => (
+					<p key={i}>
+					  <span>Key Name: {key}</span>
+					  <span>Value: {stats[key]}</span>
+					</p>
+				  ))}
+				  </ul>
+				/*{stats.map((key, i) => (
 					<p key={i}>
 					  <span>Key Name: {key}</span>
 					  <span>Value: {stats[key]}</span>
 					</p>
 					  
-				  ))}
+				  ))}*/
 				setStatss(stats);
 			});
 	  
