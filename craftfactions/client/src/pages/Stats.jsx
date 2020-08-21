@@ -3,7 +3,8 @@ import { css } from "emotion";
 
 import Button from "../components/Button";
 import Input from "../components/Input";
-import Axios from "axios";
+import axios from "axios";
+import { useEffect } from "react";
 
 function Stats() {
 const [statss,setStatss] = useState([]);
@@ -13,11 +14,16 @@ const [statss,setStatss] = useState([]);
 	   .get('https://mkr.thefeathers.in/player/5f39b87881505ced8b9b8e92/stats')
 	   .then(res => res.data)
 			.then(res => {
-				const stats = res.stats["minecraft:custom"]
-				Object.keys(stats).forEach(function(key) {
-					console.table('Key : ' + key + ', Value : ' + stats[key])
-				  })
-
+				const stats = res.stats["minecraft:custom"];
+				
+				//const listItems = stats.map((key) => <li key={key}>{stats[key]}</li>);
+				{stats.map((key, i) => (
+					<p key={i}>
+					  <span>Key Name: {key}</span>
+					  <span>Value: {stats[key]}</span>
+					</p>
+					  
+				  ))}
 				setStatss(stats);
 			});
 	  
