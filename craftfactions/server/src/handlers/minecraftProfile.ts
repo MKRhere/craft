@@ -1,3 +1,4 @@
+import type { Router as ExpressRouter } from "express";
 import type { MojangProfile, MojangProfileTexture } from "../util/minecraft";
 
 import { Router } from "express";
@@ -5,7 +6,7 @@ import { getSkin } from "../util/minecraft";
 import { asyncHandler, createError } from "../util/asyncHandler";
 import { toBase64 } from "../util";
 
-const router = Router();
+const router = Router() as ExpressRouter;
 
 router.get(
 	"/session/minecraft/profile/:id",
@@ -41,3 +42,5 @@ router.get(
 		res.send(profile);
 	}),
 );
+
+export default router;

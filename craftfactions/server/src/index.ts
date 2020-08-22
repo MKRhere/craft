@@ -10,6 +10,7 @@ import Member from "./database/Member";
 import { authentication } from "./middleware/authentication";
 import { createCrud } from "./util/crud";
 import player from "./handlers/player";
+import minecraftProfile from "./handlers/minecraftProfile";
 
 const app = express();
 
@@ -40,6 +41,7 @@ async function main() {
 	});
 
 	app.use("/", player);
+	app.use("/", minecraftProfile);
 
 	Crud(Member, { authentication });
 
