@@ -1,4 +1,5 @@
 dependencies:
+  axios: 0.20.0
   body-parser: 1.19.0
   cors: 2.8.5
   dotenv: 8.2.0
@@ -106,6 +107,12 @@ packages:
     dev: false
     resolution:
       integrity: sha1-ml9pkFGx5wczKPKgCJaLZOopVdI=
+  /axios/0.20.0:
+    dependencies:
+      follow-redirects: 1.13.0
+    dev: false
+    resolution:
+      integrity: sha512-ANA4rr2BDcmmAQLOKft2fufrtuvlqR+cXNNinUmvfeSNCOF98PZL+7M/v1zIdGo7OLjEA9J2gXJL+j4zGsl0bA==
   /bl/2.2.0:
     dependencies:
       readable-stream: 2.3.7
@@ -288,6 +295,12 @@ packages:
       node: '>= 0.8'
     resolution:
       integrity: sha512-aAWcW57uxVNrQZqFXjITpW3sIUQmHGG3qSb9mUah9MgMC4NeWhNOlNjXEYq3HjRAvL6arUviZGGJsBg6z0zsWA==
+  /follow-redirects/1.13.0:
+    dev: false
+    engines:
+      node: '>=4.0'
+    resolution:
+      integrity: sha512-aq6gF1BEKje4a9i9+5jimNFIpq4Q1WiwBToeRK5NvZBd/TRsmW8BsJfOEGkr76TbOyPVD3OVDN910EcUNtRYEA==
   /forwarded/0.1.2:
     dev: false
     engines:
@@ -705,6 +718,7 @@ specifiers:
   '@types/express': ^4.17.7
   '@types/mongoose': ^5.7.36
   '@types/node': ^14.0.14
+  axios: ^0.20.0
   body-parser: ^1.19.0
   cors: ^2.8.5
   dotenv: ^8.2.0
