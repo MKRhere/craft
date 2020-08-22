@@ -112,7 +112,7 @@ function List({ title, list }) {
 	);
 }
 
-function Login() {
+function Dashboard() {
 	const [all, setAll] = useState([]);
 	const [factions, setFactions] = useState([]);
 	const [players, setPlayers] = useState([]);
@@ -178,4 +178,4 @@ function Login() {
 	);
 }
 
-export default Login;
+export default Dashboard;

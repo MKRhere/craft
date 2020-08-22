@@ -5,6 +5,7 @@ dependencies:
   react: 16.13.1
   react-dom: 16.13.1_react@16.13.1
   react-scripts: 3.4.1
+  skinview3d: 2.0.0-alpha.7
 lockfileVersion: 5.1
 packages:
   /@babel/code-frame/7.10.4:
@@ -9983,6 +9984,17 @@ packages:
     dev: false
     resolution:
       integrity: sha512-bLGGlR1QxBcynn2d5YmDX4MGjlZvy2MRBDRNHLJ8VI6l6+9FUiyTFNJ0IveOSP0bcXgVDPRcfGqA0pjaqUpfVg==
+  /skinview-utils/0.5.7:
+    dev: false
+    resolution:
+      integrity: sha512-XhOuCzvGoHuYOymfuZ8IJklVgqkYfusuyQSZMWiE/kluh89ZtBjS3cwoHIff1+Z5mAXHoa+Vkr0wN3JHJvF2ag==
+  /skinview3d/2.0.0-alpha.7:
+    dependencies:
+      skinview-utils: 0.5.7
+      three: 0.119.1
+    dev: false
+    resolution:
+      integrity: sha512-NadyV0wCZWxYXhX4kDSd5qPyDWR/CqD0N5jMxE+iOcTphodbTUbafB9ddjDZT8BVentmoKnEs3rx6yxe2krb9w==
   /slash/1.0.0:
     dev: false
     engines:
@@ -10583,6 +10595,10 @@ packages:
     dev: false
     resolution:
       integrity: sha1-f17oI66AUgfACvLfSoTsP8+lcLQ=
+  /three/0.119.1:
+    dev: false
+    resolution:
+      integrity: sha512-GHyh/RiUfQ5VTiWIVRRTANYoXc1PFB1y+jDVRTb649nif1uX1F06PT1TKU3k2+F/MN4UJ3PWvQB53fY2OqKqKw==
   /throat/4.1.0:
     dev: false
     resolution:
@@ -11526,3 +11542,4 @@ specifiers:
   react: ^16.13.1
   react-dom: ^16.13.1
   react-scripts: 3.4.1
+  skinview3d: ^2.0.0-alpha.7
