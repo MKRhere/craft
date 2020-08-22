@@ -5,7 +5,7 @@ import axios from "axios";
 
 import Member, { Player } from "../database/Member";
 import { Document } from "mongoose";
-import { fromBase64 } from ".";
+import { fromBase64, memoise } from ".";
 
 export type MinecraftStats = {
 	stats: Record<string, Record<string, number>>;
@@ -175,42 +175,48 @@ export const getOfficialSkin = async (
 	};
 };
 
-export const getSkin = async (
-	opts: { playerName: string } | { id: string },
-) => {
-	// attempt to get player and skin from db
-	const player = (await Member.findOne({
-		...("playerName" in opts
-			? { memberName: opts.playerName }
-			: { _id: opts.id }),
-		type: "PLAYER",
-	})) as (Player & Document) | null;
+export const getSkin = memoise(
+	async (
+		opts: { playerName: string } | { id: string },
+	): Promise<{
+		name: string;
+		skin?: string;
+		cape?: string;
+	}> => {
+		// attempt to get player and skin from db
+		const player = (await Member.findOne({
+			...("playerName" in opts
+				? { memberName: opts.playerName }
+				: { _id: opts.id }),
+			type: "PLAYER",
+		})) as (Player & Document) | null;
 
-	// I've never met this person in my life!
-	if (!player) throw new Error("Unknown player");
+		// I've never met this person in my life!
+		if (!player) throw new Error("Unknown player");
 
-	if (player.skin) {
-		// Send off our skin!
-		return { name: player.memberName, skin: player.skin, cape: player.cape };
-	} else {
-		let mojangProfile;
-
-		try {
-			// Let's check if Mojang has a skin
-			mojangProfile = await getOfficialSkin({
-				profileName: player.memberName,
-			});
-		} catch {}
-
-		if (mojangProfile?.skin) {
-			return { name: player.memberName, skin: mojangProfile.skin };
+		if (player.skin) {
+			// Send off our skin!
+			return { name: player.memberName, skin: player.skin, cape: player.cape };
 		} else {
-			// Nobody has your skins here!
-			const steveOrAlex = defaultSteveOrAlex(player._id.toString());
-			return {
-				name: player.memberName,
-				skin: defaultSkins[steveOrAlex],
-			};
+			let mojangProfile;
+
+			try {
+				// Let's check if Mojang has a skin
+				mojangProfile = await getOfficialSkin({
+					profileName: player.memberName,
+				});
+			} catch {}
+
+			if (mojangProfile?.skin) {
+				return { name: player.memberName, skin: mojangProfile.skin };
+			} else {
+				// Nobody has your skins here!
+				const steveOrAlex = defaultSteveOrAlex(player._id.toString());
+				return {
+					name: player.memberName,
+					skin: defaultSkins[steveOrAlex],
+				};
+			}
 		}
-	}
-};
+	},
+);
