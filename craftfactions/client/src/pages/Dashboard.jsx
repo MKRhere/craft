@@ -51,64 +51,80 @@ const listStyle = css`
 		list-style: none;
 		margin: 0;
 		padding: 0;
-
-		& li {
-			margin: 1rem 0;
-			padding: 0;
-			display: flex;
-			background: #222;
-			cursor: default;
-
-			&:hover {
-				background: #333;
-			}
-
-			div,
-			h5,
-			h6 {
-				margin: 0;
-				padding: 0;
-				font-weight: 500;
-			}
-
-			div {
-				width: 100%;
-				padding: 2px;
-			}
-
-			h6 {
-				color: #888;
-			}
-
-			img {
-				padding: 0;
-				height: 40px;
-				margin-right: 0.5rem;
-			}
-		}
 	}
 `;
 
+const listItemStyle = css`
+	margin: 1rem 0;
+	padding: 0;
+	display: flex;
+	background: #222;
+	cursor: default;
+	height: 40px;
+	line-height: 1.1rem;
+
+	&:hover {
+		background: #333;
+	}
+
+	div,
+	h5,
+	h6 {
+		margin: 0;
+		padding: 0;
+		font-weight: 500;
+	}
+
+	div {
+		width: 100%;
+		padding: 2px;
+	}
+
+	h6 {
+		color: #888;
+	}
+
+	img {
+		padding: 0;
+		height: 40px;
+		margin-right: 0.5rem;
+	}
+`;
+
+function ListItem({ img, title, subtitle, ...props }) {
+	return (
+		<li className={`${props.className || ""} noselect`} {...props}>
+			<img src={img}></img>
+			<div>
+				<h5>{title}</h5>
+				<h6>{subtitle}</h6>
+			</div>
+		</li>
+	);
+}
+
 function List({ title, list }) {
-	return list.length ? (
+	return !list.length ? (
+		""
+	) : (
 		<div className={listStyle}>
 			<h3>{title} ▾</h3>
 			<ul>
 				{list.map(item => (
-					<li key={item._id}>
-						<img src={item.flag}></img>
-						<div>
-							<h5>{item.memberName}</h5>
-							{item.type === "PLAYER" && item.faction && (
-								<h6>{item.faction}</h6>
-							)}
-						</div>
-					</li>
+					<ListItem
+						className={listItemStyle}
+						key={item._id}
+						img={item.flag}
+						title={item.memberName}
+						subtitle={
+							item.type === "PLAYER" && item.faction
+								? item.faction
+								: ""
+						}
+					/>
 				))}
 			</ul>
 		</div>
-	) : (
-		""
 	);
 }
 
@@ -163,7 +179,7 @@ function Dashboard() {
 	return (
 		<main className={container}>
 			<div className={leftPane}>x</div>
-			<div className={`${rightPane} noselect`}>
+			<div className={rightPane}>
 				<Input
 					type="text"
 					placeholder="Search"
