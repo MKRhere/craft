@@ -5,11 +5,13 @@ import { Router } from "express";
 import { getSkin } from "../util/minecraft";
 import { asyncHandler, createError } from "../util/asyncHandler";
 import { toBase64 } from "../util";
+import { cache } from "../middleware/cache";
 
 const router = Router() as ExpressRouter;
 
 router.get(
 	"/session/minecraft/profile/:id",
+	cache(),
 	asyncHandler(async (req, res) => {
 		let result;
 		try {
