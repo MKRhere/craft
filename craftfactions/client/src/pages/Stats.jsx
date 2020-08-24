@@ -10,9 +10,15 @@ function Stats() {
 const [statss,setStatss] = useState([]);
 
 const container = css`
-.container > p:nth-child(2n)  {
-	color: #ccc;
+  p {
+	margin: auto;
+	width: 50%;
+	display: flex;
   }
+`;
+
+const active = css`
+color: #ccc;
 `;
 
 const mystyle = css`
@@ -37,11 +43,12 @@ const mystyle2 = css`
 				console.log(res);
 				const stats = res.stats["minecraft:custom"];
 				console.log(stats);
-				const list =Object.keys(stats).map((key) => (
+				const list =Object.keys(stats).map((key, index) => (
 					<div className={container}>
-					<p className={mystyle}>
+					<p className={`${mystyle} ${index % 2 === 0 ? active : ""}`}>
 					  <div className={mystyle1}> {key}</div>
 					  <div className={mystyle2}> {stats[key]}</div>
+					
 					</p>
 					</div>
 				  ))
