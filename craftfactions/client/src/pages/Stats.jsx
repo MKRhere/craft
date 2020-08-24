@@ -9,19 +9,26 @@ import { useEffect } from "react";
 function Stats() {
 const [statss,setStatss] = useState([]);
 
-const mystyle = {
-	margin: "auto",
-	width: "50%",
-	display: "flex"
-  };
+const container = css`
+.container > p:nth-child(2n)  {
+	color: #ccc;
+  }
+`;
 
-const mystyle1 = {
-	flex: "1",
-};
+const mystyle = css`
+	margin: auto;
+	width: 50%;
+	display: flex;
+	
+  `;
 
-const mystyle2 = {
-	textAlign: "right"	
-};
+const mystyle1 = css`
+	flex: 1;
+`;
+
+const mystyle2 = css`
+	text-align: right;	
+`;
 	const callAPI = () => 
 	   axios
 	   .get('https://mkr.thefeathers.in/player/5f39b87881505ced8b9b8e92/stats')
@@ -30,11 +37,13 @@ const mystyle2 = {
 				console.log(res);
 				const stats = res.stats["minecraft:custom"];
 				console.log(stats);
-				const list =Object.keys(stats).map((key, i) => (
-					<p key={i} style={mystyle}>
-					  <div style={mystyle1}> {key}</div>
-					  <div style={mystyle2}> {stats[key]}</div>
+				const list =Object.keys(stats).map((key) => (
+					<div className={container}>
+					<p className={mystyle}>
+					  <div className={mystyle1}> {key}</div>
+					  <div className={mystyle2}> {stats[key]}</div>
 					</p>
+					</div>
 				  ))
 				
 				setStatss(list);
