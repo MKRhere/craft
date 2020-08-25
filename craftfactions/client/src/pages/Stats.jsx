@@ -28,11 +28,14 @@ const mystyle1 = css`
 `;
 
 const mystyle2 = css`
-	color: #ccc;
+	color:  #aaa;
+	text-indent: 50px;
+	
 `;
 
 const mystyle3 = css`
-color: #ccc;
+color:  #aaa;
+text-indent: 50px;
 `;
 	const callAPI = () => 
 	   axios
@@ -56,7 +59,7 @@ color: #ccc;
 					<div className={container}>
 					<p className={mystyle}>
 					  <div className={mystyle1}> {key}</div>
-					  <div className={mystyle2}> you killed {stats[key]} {key}</div>
+					  <div className={mystyle2}>you killed {stats[key]} {key}</div>
 					  <div className={mystyle3}>{stats1[key]? key + " killed you " + stats1[key] + " times"
 					  : "You have never been killed by " + key}</div>
 					</p>
