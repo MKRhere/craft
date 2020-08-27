@@ -10,16 +10,16 @@ function Map(props){
 	useEffect(() => {
 		if (container.current) {
              
-			document.getElementById('iframeinitial').contentWindow.location.reload();
+			container.current.contentWindow.location.reload();
 		}
 	}, [container.current]);
 
     return (
-    <div ref={container}>
-    <iframe frameBorder="0" style={{ width: "100%", height: "100%"}} id = "iframeinitial"
-                src="https://map.craft.mkr.pw/#overworld/0/0/${x}/${z}/${y}">
+    
+    <iframe frameBorder="0" style={{ width: "100%", height: "100%"}} ref={container}
+                src={`https://map.craft.mkr.pw/#overworld/0/0/${x}/${z}/${y}`}>
             </iframe>
-            </div>);
+    );
 }
 
 export default Map;
