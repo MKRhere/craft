@@ -24,7 +24,7 @@ function Map(props){
 	useEffect(() => {
 		if (container.current) {
              
-			container.current.contentWindow.location.reload();
+			container.current.contentWindow.postMessage("reload", "*");
 		}
 	}, [container.current]);
 
