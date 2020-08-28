@@ -30,14 +30,14 @@ function Map(props){
 
     return (
     <div>
-    <iframe frameBorder="0" className={iframecss} ref={container}
+    <iframe {...props} frameBorder="0" className={iframecss} ref={container}
                 src={`https://map.craft.mkr.pw/#overworld/0/0/${x}/${z}/${y}`}>
             </iframe>
-            <input {...props} value={inputx} className={input} type='text' 
+            <input value={inputx} className={input} type='text' 
             onChange={e => setInputx(e.target.value)} />
-            <input {...props} value={inputy} className={input} type='text' 
+            <input value={inputy} className={input} type='text' 
             onChange={e => setInputy(e.target.value)} />
-            <input {...props} value={inputz} className={input} type='text' 
+            <input value={inputz} className={input} type='text' 
             onChange={e => setInputz(e.target.value)} />
             </div>
     );
