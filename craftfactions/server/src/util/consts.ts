@@ -12,3 +12,19 @@ export const DIPLOMACY_STANCES = {
 } as const;
 
 export type DIPLOMACY_STANCES = typeof DIPLOMACY_STANCES;
+
+export const TIME = (() => {
+	const MILLISECOND = 1;
+	const SECOND = MILLISECOND * 1000;
+	const MINUTE = SECOND * 60;
+	const HOUR = MINUTE * 60;
+	const DAY = HOUR * 24;
+
+	return {
+		MILLISECOND,
+		SECOND,
+		MINUTE,
+		HOUR,
+		DAY,
+	} as const;
+})();

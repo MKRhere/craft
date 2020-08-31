@@ -4,39 +4,45 @@ import { MEMBER_TYPES, DIPLOMACY_STANCES } from "../util/consts";
 type ObjectId = Types.ObjectId;
 const ObjectId = Types.ObjectId;
 
-type Diplomacy = {
+export type Diplomacy = {
 	id: ObjectId;
 	stance: keyof DIPLOMACY_STANCES;
 };
 
-type Member = {
+type MemberBase = {
 	memberName: string;
 	flag: string;
 	diplomacy: Diplomacy[];
 };
 
-type Player = Member & {
+export type Player = MemberBase & {
 	type: MEMBER_TYPES["PLAYER"];
 	telegram: {
 		userID: string;
 		username: string;
 	};
+	skin: string;
+	cape: string;
 	faction: ObjectId;
 };
 
-type Faction = Member & {
+export type Faction = MemberBase & {
 	type: MEMBER_TYPES["FACTION"];
 	members: ObjectId[];
 };
 
-type MemberUnion = Player | Faction;
+export type Member = Player | Faction;
 
 const Diplomacy = new Schema<Diplomacy & Document>({
 	id: { type: ObjectId, required: true },
-	stance: { type: String, enum: Object.keys(DIPLOMACY_STANCES), required: true },
+	stance: {
+		type: String,
+		enum: Object.keys(DIPLOMACY_STANCES),
+		required: true,
+	},
 });
 
-export default model<MemberUnion & Document>(
+export default model<Member & Document>(
 	"Member",
 	new Schema({
 		memberName: {
@@ -63,6 +69,14 @@ export default model<MemberUnion & Document>(
 		},
 		faction: {
 			type: ObjectId,
+			required: false,
+		},
+		skin: {
+			type: String,
+			required: false,
+		},
+		cape: {
+			type: String,
 			required: false,
 		},
 		flag: {
