@@ -71,7 +71,9 @@ function Dashboard() {
 				setPlayers(everyone.filter(x => x.type === "PLAYER"));
 			});
 
-	useEffect(getAll, []);
+	useEffect(() => {
+		getAll();
+	}, []);
 
 	const doSearch = e => {
 		let search = e.target.value;
