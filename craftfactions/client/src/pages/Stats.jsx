@@ -69,7 +69,7 @@ function Stats() {
     ...new Set(keys.flatMap((titleKey) => Object.keys(statistics[titleKey]))),
   ];
   //   console.log(items);
-  console.log(keys);
+  //console.log(keys);
   //   console.log(keyMap);
   //   console.log(statistics);
 
