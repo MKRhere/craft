@@ -1,7 +1,0 @@
-Object.keys(obj).map(key=>obj[key])
-
-//Profile.jsx
-//2 pane
-//circle in left
-/right  on top 3 buttons: stats, diplomacy
-//right on bottom layer name, faction, location,days on server
