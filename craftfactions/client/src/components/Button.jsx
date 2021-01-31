@@ -9,7 +9,7 @@ const btn = css`
 	border: 2px outset #aaa;
 	outline: 1px solid #000;
 	text-shadow: 1px 1px 1px #111;
-
+	margin-right: 3px;
 	&:focus {
 		outline: 2px solid #fff;
 	}
