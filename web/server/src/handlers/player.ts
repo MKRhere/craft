@@ -16,21 +16,30 @@ router.get(
 		async (req, res) => {
 			const member = await Member.findById(req.params.id);
 
-			if (!member || member.type !== "PLAYER") throw createError("Player not found", 404);
+			if (!member || member.type !== "PLAYER")
+				throw createError("Player not found", 404);
 
-			res.json(await getStats(member.memberName));
+			res.json(await getStats(member.name));
 		},
 	]),
 );
 
 router.get(
 	"/player",
-	asyncHandler([authentication, async (req, res) => res.json(await Member.find({ type: { $ne: "FACTION" } }))]),
+	asyncHandler([
+		authentication,
+		async (req, res) =>
+			res.json(await Member.find({ type: { $ne: "FACTION" } })),
+	]),
 );
 
 router.get(
 	"/faction",
-	asyncHandler([authentication, async (req, res) => res.json(await Member.find({ type: { $ne: "PLAYER" } }))]),
+	asyncHandler([
+		authentication,
+		async (req, res) =>
+			res.json(await Member.find({ type: { $ne: "PLAYER" } })),
+	]),
 );
 
 export default router;

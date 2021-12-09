@@ -184,9 +184,7 @@ export const getSkin = async (
 }> => {
 	// attempt to get player and skin from db
 	const player = (await Member.findOne({
-		...("playerName" in opts
-			? { memberName: opts.playerName }
-			: { _id: opts.id }),
+		...("playerName" in opts ? { name: opts.playerName } : { _id: opts.id }),
 		type: "PLAYER",
 	})) as (Player & Document) | null;
 
@@ -195,24 +193,24 @@ export const getSkin = async (
 
 	if (player.skin) {
 		// Send off our skin!
-		return { name: player.memberName, skin: player.skin, cape: player.cape };
+		return { name: player.name, skin: player.skin, cape: player.cape };
 	} else {
 		let mojangProfile;
 
 		try {
 			// Let's check if Mojang has a skin
 			mojangProfile = await getOfficialSkin({
-				profileName: player.memberName,
+				profileName: player.name,
 			});
 		} catch {}
 
 		if (mojangProfile?.skin) {
-			return { name: player.memberName, skin: mojangProfile.skin };
+			return { name: player.name, skin: mojangProfile.skin };
 		} else {
 			// Nobody has your skins here!
 			const steveOrAlex = defaultSteveOrAlex(player._id.toString());
 			return {
-				name: player.memberName,
+				name: player.name,
 				skin: defaultSkins[steveOrAlex],
 			};
 		}

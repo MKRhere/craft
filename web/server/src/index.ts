@@ -27,12 +27,7 @@ async function main() {
 	app.use(cors());
 	app.use(bodyParser.json());
 
-	await mongoose.connect(env.DB_URI, {
-		useUnifiedTopology: true,
-		useNewUrlParser: true,
-		useFindAndModify: false,
-		useCreateIndex: true,
-	});
+	await mongoose.connect(env.DB_URI);
 
 	const Crud = createCrud(app);
 
