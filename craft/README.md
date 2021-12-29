@@ -8,7 +8,7 @@ The rules are guidelines and may be expanded by admins if needed at any time. In
 
 ### `1)` Spawn regions
 
-- `a)` "Spawn regions" cover current and previous world spawns. Each is a square area 700 blocks in x and z directions (1400x1400 blocks) centered on the each of:
+- `a)` "Spawn regions" cover current and previous world spawns. Each is a square area 500 blocks in x and z directions (1000x1000 blocks) centered on the each of:
 	- `i.` Season 1: 0, 0
 	- `ii.` Season 2: 460, -9608
 
