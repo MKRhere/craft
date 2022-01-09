@@ -1,0 +1,16 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern": [" N ", "C C", "CCC"],
+	"key": {
+		"N": {
+			"item": "minecraft:netherite_ingot"
+		},
+		"C": {
+			"item": "minecraft:copper_block"
+		}
+	},
+	"result": {
+		"item": "mkrcraft:binding_block",
+		"count": 1
+	}
+}

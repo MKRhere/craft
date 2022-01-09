@@ -1,0 +1,5 @@
+{
+	"variants": {
+		"": { "model": "mkrcraft:block/portal_block" }
+	}
+}

@@ -1,0 +1,12 @@
+{
+	"parent": "minecraft:block/cube",
+	"textures": {
+		"particle": "mkrcraft:block/binding_block_north",
+		"north": "mkrcraft:block/binding_block_north",
+		"south": "mkrcraft:block/binding_block_south",
+		"east": "mkrcraft:block/binding_block_east",
+		"west": "mkrcraft:block/binding_block_west",
+		"up": "mkrcraft:block/binding_block_top",
+		"down": "minecraft:block/copper_block"
+	}
+}
