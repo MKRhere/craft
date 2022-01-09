@@ -24,6 +24,8 @@ dependencies {
 	modImplementation("net.fabricmc.fabric-api:fabric-api:$fabricVersion")
 	val fabricKotlinVersion: String by project
 	modImplementation("net.fabricmc:fabric-language-kotlin:$fabricKotlinVersion")
+
+	implementation("com.google.code.gson:gson:2.8.9")
 }
 tasks {
 	val javaVersion = JavaVersion.VERSION_17
