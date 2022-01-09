@@ -1,5 +1,6 @@
 package pw.mkr.craft
 
+import kotlinx.coroutines.flow.flow
 import net.fabricmc.api.DedicatedServerModInitializer
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.text.LiteralText
@@ -22,8 +23,9 @@ object Init : DedicatedServerModInitializer {
         PortalBlock.register()
 
         ChunkChangeEvent.listen(object: ChunkChangeListener {
-            override fun onChunkChange(pos: ChunkPos, player: PlayerEntity) {
+            override fun onChunkChange(pos: ChunkPos, player: PlayerEntity): Boolean {
                 player.sendMessage(LiteralText("Welcome to the chunk ${pos}!"), false)
+                return true
             }
         })
     }
