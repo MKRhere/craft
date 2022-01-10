@@ -12,12 +12,13 @@ object ChunkEntryProcessor {
 
     fun chunkEvent(newChunkPos: Chunk, player: PlayerEntity) {
         val playerName = player.name.toString()
-        var playerChunkPos = playerChunks[playerName]
+        val playerChunkPos = playerChunks[playerName]
 
-        // if player doesn't exist in hashmap, add them and proceed with the check
+        // if player doesn't exist in hashmap, add them and broadcast
         if (playerChunkPos == null) {
             playerChunks[playerName] = newChunkPos
-            playerChunkPos = newChunkPos
+            ChunkEntryEvent.broadcast(newChunkPos, player)
+            return
         }
 
         // if new chunk matches previous chunk, set previous chunk
