@@ -7,7 +7,7 @@ private val listeners: MutableList<ChunkEntryListener> = mutableListOf()
 
 interface ChunkEntryListener {
     // return true if you want to keep receiving future updates
-    fun onChunkEntry(pos: Chunk, player: PlayerEntity): Boolean
+    fun onChunkEntry(player: PlayerEntity, oldChunk: Chunk, newChunk: Chunk): Boolean
 }
 
 object ChunkEntryEvent {
@@ -16,13 +16,13 @@ object ChunkEntryEvent {
     }
 
     @Synchronized
-    fun broadcast(pos: Chunk, player: PlayerEntity) {
+    fun broadcast(player: PlayerEntity, oldChunk: Chunk, newChunk: Chunk) {
         val listenerIterator = listeners.iterator()
 
         while (listenerIterator.hasNext()) {
             val listener = listenerIterator.next()
 
-            if (!listener.onChunkEntry(pos, player)) listenerIterator.remove()
+            if (!listener.onChunkEntry(player, oldChunk, newChunk)) listenerIterator.remove()
         }
     }
 }

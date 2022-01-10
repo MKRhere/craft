@@ -10,22 +10,23 @@ import pw.mkr.craft.models.Chunk
 object ChunkEntryProcessor {
     private val playerChunks: HashMap<String, Chunk> = hashMapOf()
 
-    fun chunkEvent(newChunkPos: Chunk, player: PlayerEntity) {
+    fun chunkEvent(newChunk: Chunk, player: PlayerEntity) {
         val playerName = player.name.toString()
-        val playerChunkPos = playerChunks[playerName]
+        val oldChunk = playerChunks[playerName]
 
         // if player doesn't exist in hashmap, add them and broadcast
-        if (playerChunkPos == null) {
-            playerChunks[playerName] = newChunkPos
-            ChunkEntryEvent.broadcast(newChunkPos, player)
-            return
+        if (oldChunk == null) {
+            playerChunks[playerName] = newChunk
+            // if player was not in hashmap, they were previously
+            // in the same chunk that they are in right now
+            return ChunkEntryEvent.broadcast(player, newChunk, newChunk)
         }
 
         // if new chunk matches previous chunk, set previous chunk
         // to new chunk, and broadcast this chunk change as an event
-        if (playerChunkPos != newChunkPos) {
-            playerChunks[playerName] = newChunkPos
-            ChunkEntryEvent.broadcast(newChunkPos, player)
+        if (oldChunk != newChunk) {
+            playerChunks[playerName] = newChunk
+            ChunkEntryEvent.broadcast(player, oldChunk, newChunk)
         }
     }
 }
