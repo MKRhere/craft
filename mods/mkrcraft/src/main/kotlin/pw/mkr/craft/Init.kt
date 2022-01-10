@@ -1,8 +1,9 @@
 package pw.mkr.craft
 
-import net.fabricmc.api.DedicatedServerModInitializer
+import net.fabricmc.api.ModInitializer
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.server.network.ServerPlayerEntity
+import net.minecraft.text.LiteralText
 import net.minecraft.world.GameMode
 import pw.mkr.craft.binding.BindingBlock
 import pw.mkr.craft.events.chunkentry.ChunkEntryEvent
@@ -12,11 +13,10 @@ import pw.mkr.craft.portals.PortalBlock
 import pw.mkr.craft.utils.StoreManager
 
 @Suppress("Unused")
-object Init : DedicatedServerModInitializer {
+object Init : ModInitializer {
     const val MOD_ID = "mkrcraft"
-    private val cachedGameModes: HashMap<String, GameMode> = hashMapOf()
 
-    override fun onInitializeServer() {
+    override fun onInitialize() {
         StoreManager.init()
         BindingBlock.register()
         PortalBlock.register()
@@ -26,22 +26,25 @@ object Init : DedicatedServerModInitializer {
                 val oldBinding = StoreManager.chunkBoundTo(oldChunk)
                 val newBinding = StoreManager.chunkBoundTo(newChunk)
 
+                fun send(msg: String) = player.sendMessage(LiteralText(msg), false)
+
                 player.server ?: return true
 
                 val serverPlayer = player as ServerPlayerEntity
 
                 // player went inside a bound chunk
                 if (oldBinding == null && newBinding != null) {
-                    serverPlayer.changeGameMode(GameMode.ADVENTURE)
-                    cachedGameModes[player.uuidAsString] = serverPlayer.interactionManager.gameMode
+                    if (serverPlayer.interactionManager.gameMode == GameMode.SURVIVAL) {
+                        serverPlayer.changeGameMode(GameMode.ADVENTURE)
+                        send("you've entered ${newBinding.player}'s claim")
+                    }
                 }
 
                 // player went out of a bound chunk
                 if (oldBinding != null && newBinding == null) {
-                    cachedGameModes[player.uuidAsString].also {
-                        it ?: return@also
-                        serverPlayer.changeGameMode(it)
-                        cachedGameModes.remove(player.uuidAsString)
+                    if (serverPlayer.interactionManager.gameMode == GameMode.ADVENTURE) {
+                        serverPlayer.changeGameMode(GameMode.SURVIVAL)
+                        send("hope you had a good time in ${oldBinding.player}'s claim!")
                     }
                 }
 

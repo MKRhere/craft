@@ -31,7 +31,7 @@ class BindingBlock(settings: Settings) : Block(settings) {
             fun sendMessage(msg: String) = placer.sendSystemMessage(LiteralText(msg), placer.uuid)
 
             val blockChunk = ChunkPos(pos).toModel()
-            val binding = StoreManager.addBinding(Binding(blockChunk, placer.name.toString()))
+            val binding = StoreManager.addBinding(Binding(blockChunk, placer.name.asString()))
 
             binding ?: return sendMessage("Failed to claim binding")
 
