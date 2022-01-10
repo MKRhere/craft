@@ -15,7 +15,6 @@ import pw.mkr.craft.utils.StoreManager
 @Suppress("Unused")
 object Init : DedicatedServerModInitializer {
     const val MOD_ID = "mkrcraft"
-    val logger = LogManager.getLogger()!!
 
     override fun onInitializeServer() {
         StoreManager.init()

@@ -20,17 +20,17 @@ object StoreManager {
 
     fun init() =
         if (!storeFile.exists()) {
-            Init.logger.info("Store not found, creating one at $storeFile")
+            Utils.logger.info("Store not found, creating one at $storeFile")
             store = Store(mutableListOf())
             saveToDisk()
         } else {
-            Init.logger.info("Using existing store at $storeFile")
+            Utils.logger.info("Using existing store at $storeFile")
             store = gson.fromJson(storeFile.readText(), Store::class.java)
         }
 
     fun addBinding(binding: Binding) {
         if (doesBindingExist(binding)) {
-            Init.logger.warn("Binding $binding already exists, skipping")
+            Utils.logger.warn("Binding $binding already exists, skipping")
             return
         }
 
@@ -39,7 +39,7 @@ object StoreManager {
 
     fun removeBinding(binding: Binding) {
         if (doesBindingExist(binding)) store.placedBindings -= binding
-        else Init.logger.warn("Binding $binding doesn't exist, unable to remove")
+        else Utils.logger.warn("Binding $binding doesn't exist, unable to remove")
     }
 
     fun saveToDisk() = storeFile.writeText(gson.toJson(store))
