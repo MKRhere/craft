@@ -2,12 +2,13 @@ package pw.mkr.craft.events.chunkchange
 
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.util.math.ChunkPos
+import pw.mkr.craft.models.Chunk
 
 private val listeners: MutableList<ChunkChangeListener> = mutableListOf()
 
 interface ChunkChangeListener {
     // return true if you want to keep receiving future updates
-    fun onChunkChange(pos: ChunkPos, player: PlayerEntity): Boolean
+    fun onChunkChange(pos: Chunk, player: PlayerEntity): Boolean
 }
 
 object ChunkChangeEvent {
@@ -16,7 +17,7 @@ object ChunkChangeEvent {
     }
 
     @Synchronized
-    fun broadcast(pos: ChunkPos, player: PlayerEntity) {
+    fun broadcast(pos: Chunk, player: PlayerEntity) {
         val listenerIterator = listeners.iterator()
 
         while (listenerIterator.hasNext()) {

@@ -3,6 +3,7 @@ package pw.mkr.craft.utils
 import com.google.gson.GsonBuilder
 import net.fabricmc.loader.api.FabricLoader
 import pw.mkr.craft.Init
+import pw.mkr.craft.models.Binding
 import java.io.File
 
 object StoreManager {
