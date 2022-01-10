@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import pw.mkr.craft.events.chunkchange.ChunkChangeProcessor;
+import pw.mkr.craft.events.chunkentry.ChunkEntryProcessor;
 import pw.mkr.craft.models.Chunk;
 
 @Mixin(PlayerEntity.class)
@@ -16,6 +16,6 @@ public class PlayerEntityMixin {
     private void onTravel(Vec3d movementInput, CallbackInfo ci) {
         PlayerEntity player = (PlayerEntity) (Object) this;
         ChunkPos chunk = player.getChunkPos();
-        ChunkChangeProcessor.INSTANCE.chunkEvent(new Chunk(chunk.x, chunk.z), player);
+        ChunkEntryProcessor.INSTANCE.chunkEvent(new Chunk(chunk.x, chunk.z), player);
     }
 }

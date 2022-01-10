@@ -1,14 +1,13 @@
-package pw.mkr.craft.events.chunkchange
+package pw.mkr.craft.events.chunkentry
 
 import net.minecraft.entity.player.PlayerEntity
-import net.minecraft.util.math.ChunkPos
 import pw.mkr.craft.models.Chunk
 
 /***
  * Observes a constant stream of chunk status and broadcasts
  * a chunk change event when it detects a change
  */
-object ChunkChangeProcessor {
+object ChunkEntryProcessor {
     private val playerChunks: HashMap<String, Chunk> = hashMapOf()
 
     fun chunkEvent(newChunkPos: Chunk, player: PlayerEntity) {
@@ -25,7 +24,7 @@ object ChunkChangeProcessor {
         // to new chunk, and broadcast this chunk change as an event
         if (playerChunkPos != newChunkPos) {
             playerChunks[playerName] = newChunkPos
-            ChunkChangeEvent.broadcast(newChunkPos, player)
+            ChunkEntryEvent.broadcast(newChunkPos, player)
         }
     }
 }

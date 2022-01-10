@@ -1,14 +1,12 @@
 package pw.mkr.craft
 
-import kotlinx.coroutines.flow.flow
 import net.fabricmc.api.DedicatedServerModInitializer
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.text.LiteralText
 import net.minecraft.util.math.ChunkPos
-import org.apache.logging.log4j.LogManager
 import pw.mkr.craft.binding.BindingBlock
-import pw.mkr.craft.events.chunkchange.ChunkChangeEvent
-import pw.mkr.craft.events.chunkchange.ChunkChangeListener
+import pw.mkr.craft.events.chunkentry.ChunkChangeEvent
+import pw.mkr.craft.events.chunkentry.ChunkChangeListener
 import pw.mkr.craft.portals.PortalBlock
 import pw.mkr.craft.utils.StoreManager
 
