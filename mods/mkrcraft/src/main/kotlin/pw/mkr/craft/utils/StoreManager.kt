@@ -18,7 +18,7 @@ object StoreManager {
         )
 
     private fun doesBindingExist(binding: Binding) =
-        store.placedBindings.find { it == binding } != null
+        store.bindings.find { it == binding } != null
 
     fun init() =
         if (!storeFile.exists()) {
@@ -30,17 +30,18 @@ object StoreManager {
             store = gson.fromJson(storeFile.readText(), Store::class.java)
         }
 
-    fun addBinding(binding: Binding) {
+    fun addBinding(binding: Binding): Binding? {
         if (doesBindingExist(binding)) {
             Utils.logger.warn("Binding $binding already exists, skipping")
-            return
+            return null
         }
 
-        store.placedBindings += binding
+        store.bindings += binding
+        return binding
     }
 
     fun removeBinding(binding: Binding) {
-        if (doesBindingExist(binding)) store.placedBindings -= binding
+        if (doesBindingExist(binding)) store.bindings -= binding
         else Utils.logger.warn("Binding $binding doesn't exist, unable to remove")
     }
 

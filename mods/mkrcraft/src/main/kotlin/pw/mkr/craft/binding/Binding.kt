@@ -7,10 +7,16 @@ import net.minecraft.block.BlockState
 import net.minecraft.block.Material
 import net.minecraft.entity.LivingEntity
 import net.minecraft.item.*
+import net.minecraft.text.LiteralText
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.BlockPos
+import net.minecraft.util.math.ChunkPos
 import net.minecraft.util.registry.Registry
 import net.minecraft.world.World
+import pw.mkr.craft.models.Binding
+import pw.mkr.craft.models.toModel
+import pw.mkr.craft.utils.StoreManager
+import pw.mkr.craft.utils.Utils
 
 class BindingBlock(settings: Settings) : Block(settings) {
     override fun onPlaced(
@@ -20,8 +26,19 @@ class BindingBlock(settings: Settings) : Block(settings) {
             placer: LivingEntity?,
             itemStack: ItemStack?
     ) {
-        // TODO(mkr): logic to validate, handle/store binding on placement
+        // TODO(mkr): logic to validate binding on placement
+        if (placer != null) {
+            fun sendMessage(msg: String) = placer.sendSystemMessage(LiteralText(msg), placer.uuid)
+
+            val blockChunk = ChunkPos(pos).toModel()
+            val binding = StoreManager.addBinding(Binding(blockChunk, placer.name.toString()))
+
+            binding ?: return sendMessage("Failed to claim binding")
+
+            sendMessage("You have claimed ${binding.claimRadius} chunks around $blockChunk")
+        } else Utils.logger.error("Binding block placed by unknown entity!")
     }
+
     companion object {
         fun register() {
             val bindingBlock =
