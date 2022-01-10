@@ -4,6 +4,7 @@ import com.google.gson.GsonBuilder
 import net.fabricmc.loader.api.FabricLoader
 import pw.mkr.craft.Init
 import pw.mkr.craft.models.Binding
+import pw.mkr.craft.models.Store
 import java.io.File
 
 object StoreManager {

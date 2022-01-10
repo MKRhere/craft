@@ -3,10 +3,10 @@ package pw.mkr.craft
 import net.fabricmc.api.DedicatedServerModInitializer
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.text.LiteralText
-import net.minecraft.util.math.ChunkPos
 import pw.mkr.craft.binding.BindingBlock
-import pw.mkr.craft.events.chunkentry.ChunkChangeEvent
-import pw.mkr.craft.events.chunkentry.ChunkChangeListener
+import pw.mkr.craft.events.chunkentry.ChunkEntryEvent
+import pw.mkr.craft.events.chunkentry.ChunkEntryListener
+import pw.mkr.craft.models.Chunk
 import pw.mkr.craft.portals.PortalBlock
 import pw.mkr.craft.utils.StoreManager
 
@@ -19,9 +19,9 @@ object Init : DedicatedServerModInitializer {
         BindingBlock.register()
         PortalBlock.register()
 
-        ChunkChangeEvent.listen(object: ChunkChangeListener {
-            override fun onChunkChange(pos: ChunkPos, player: PlayerEntity): Boolean {
-                player.sendMessage(LiteralText("Welcome to the chunk ${pos}!"), false)
+        ChunkEntryEvent.listen(object: ChunkEntryListener {
+            override fun onChunkEntry(player: PlayerEntity, oldChunk: Chunk, newChunk: Chunk): Boolean {
+                player.sendMessage(LiteralText("Welcome to the chunk ${newChunk}!"), false)
                 return true
             }
         })
