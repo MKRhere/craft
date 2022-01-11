@@ -27,16 +27,18 @@ class BindingBlock(settings: Settings) : Block(settings) {
             itemStack: ItemStack?
     ) {
         // TODO(mkr): logic to validate binding on placement
-        if (placer != null) {
-            fun sendMessage(msg: String) = placer.sendSystemMessage(LiteralText(msg), placer.uuid)
+        if (Utils.isServer) {
+            if (placer != null) {
+                fun sendMessage(msg: String) = placer.sendSystemMessage(LiteralText(msg), placer.uuid)
 
-            val blockChunk = ChunkPos(pos).toModel()
-            val binding = StoreManager.addBinding(Binding(blockChunk, placer.name.asString()))
+                val blockChunk = ChunkPos(pos).toModel()
+                val binding = StoreManager.addBinding(Binding(blockChunk, placer.name.asString()))
 
-            binding ?: return sendMessage("Failed to claim binding")
+                binding ?: return sendMessage("Failed to claim binding")
 
-            sendMessage("You have claimed ${binding.claimRadius} chunks around $blockChunk")
-        } else Utils.logger.error("Binding block placed by unknown entity!")
+                sendMessage("You have claimed ${binding.claimRadius} chunks around $blockChunk")
+            } else Utils.logger.error("Binding block placed by unknown entity!")
+        }
     }
 
     companion object {
