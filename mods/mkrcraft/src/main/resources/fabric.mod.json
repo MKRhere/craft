@@ -18,7 +18,13 @@
 
 	"environment": "*",
 	"entrypoints": {
-		"main": [
+		"server": [
+			{
+				"adapter": "kotlin",
+				"value": "pw.mkr.craft.ServerInit"
+			}
+		],
+		"client": [
 			{
 				"adapter": "kotlin",
 				"value": "pw.mkr.craft.Init"
