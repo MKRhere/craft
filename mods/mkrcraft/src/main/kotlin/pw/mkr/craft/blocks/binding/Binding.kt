@@ -1,22 +1,23 @@
 package pw.mkr.craft.blocks.binding
 
-import net.fabricmc.fabric.api.item.v1.FabricItemSettings
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
+import net.fabricmc.fabric.api.item.v1.FabricItemSettings
 import net.minecraft.block.Block
 import net.minecraft.block.BlockState
 import net.minecraft.block.Material
 import net.minecraft.block.entity.BlockEntity
 import net.minecraft.entity.LivingEntity
 import net.minecraft.entity.player.PlayerEntity
-import net.minecraft.item.*
+import net.minecraft.item.BlockItem
+import net.minecraft.item.ItemGroup
+import net.minecraft.item.ItemStack
 import net.minecraft.text.LiteralText
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.ChunkPos
 import net.minecraft.util.registry.Registry
 import net.minecraft.world.World
-import net.minecraft.world.WorldAccess
-import net.minecraft.world.explosion.Explosion
+import net.minecraft.world.event.GameEvent
 import pw.mkr.craft.models.Binding
 import pw.mkr.craft.models.toModel
 import pw.mkr.craft.utils.StoreManager
@@ -31,7 +32,7 @@ class BindingBlock(settings: Settings) : Block(settings) {
         itemStack: ItemStack?
     ) {
         if (Utils.isServer) {
-            if (placer != null) {
+            if (placer != null && world != null && pos != null) {
                 fun sendMessage(msg: String) = placer.sendSystemMessage(LiteralText(msg), placer.uuid)
 
                 val blockChunk = ChunkPos(pos).toModel()
@@ -39,7 +40,7 @@ class BindingBlock(settings: Settings) : Block(settings) {
                 // check if a binding exists
                 val existingBinding = StoreManager.chunkBoundTo(blockChunk)
                 if (existingBinding != null) {
-
+                    world.breakBlock(pos, true, placer)
                     return sendMessage("This chunk has already been claimed by ${existingBinding.player}")
                 }
 
