@@ -17,7 +17,6 @@ import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.ChunkPos
 import net.minecraft.util.registry.Registry
 import net.minecraft.world.World
-import net.minecraft.world.event.GameEvent
 import pw.mkr.craft.models.Binding
 import pw.mkr.craft.models.toModel
 import pw.mkr.craft.utils.StoreManager
@@ -32,7 +31,7 @@ class BindingBlock(settings: Settings) : Block(settings) {
         itemStack: ItemStack?
     ) {
         if (Utils.isServer) {
-            if (placer != null && world != null && pos != null) {
+            if (placer != null && world != null && pos != null && itemStack != null) {
                 fun sendMessage(msg: String) = placer.sendSystemMessage(LiteralText(msg), placer.uuid)
 
                 val blockChunk = ChunkPos(pos).toModel()
@@ -44,7 +43,12 @@ class BindingBlock(settings: Settings) : Block(settings) {
                     return sendMessage("This chunk has already been claimed by ${existingBinding.player}")
                 }
 
-                val binding = StoreManager.addBinding(Binding(blockChunk, placer.name.asString()))
+                val binding = StoreManager.addBinding(Binding(
+                    blockChunk,
+                    pos.toModel(),
+                    itemStack.name.asString(),
+                    placer.name.asString()
+                ))
 
                 binding ?: return sendMessage("Failed to claim binding")
 
