@@ -1,4 +1,4 @@
-package pw.mkr.craft.portals
+package pw.mkr.craft.blocks.portals
 
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings

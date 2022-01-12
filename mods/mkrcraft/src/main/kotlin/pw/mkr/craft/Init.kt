@@ -1,8 +1,8 @@
 package pw.mkr.craft
 
 import net.fabricmc.api.ClientModInitializer
-import pw.mkr.craft.binding.BindingBlock
-import pw.mkr.craft.portals.PortalBlock
+import pw.mkr.craft.blocks.binding.BindingBlock
+import pw.mkr.craft.blocks.portals.PortalBlock
 
 @Suppress("Unused")
 object Init : ClientModInitializer {

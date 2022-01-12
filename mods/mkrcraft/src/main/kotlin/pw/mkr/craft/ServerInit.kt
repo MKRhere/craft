@@ -5,12 +5,12 @@ import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.text.LiteralText
 import net.minecraft.world.GameMode
-import pw.mkr.craft.binding.BindingBlock
+import pw.mkr.craft.blocks.binding.BindingBlock
 import pw.mkr.craft.events.chunkentry.ChunkEntryEvent
 import pw.mkr.craft.events.chunkentry.ChunkEntryListener
 import pw.mkr.craft.models.Binding
 import pw.mkr.craft.models.Chunk
-import pw.mkr.craft.portals.PortalBlock
+import pw.mkr.craft.blocks.portals.PortalBlock
 import pw.mkr.craft.utils.StoreManager
 
 @Suppress("Unused")

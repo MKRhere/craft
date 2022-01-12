@@ -1,4 +1,4 @@
-package pw.mkr.craft.binding
+package pw.mkr.craft.blocks.binding
 
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
