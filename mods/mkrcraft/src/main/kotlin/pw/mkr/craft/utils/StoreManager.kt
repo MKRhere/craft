@@ -45,9 +45,14 @@ object StoreManager {
         return binding
     }
 
-    fun removeBinding(binding: Binding) {
-        if (doesBindingExist(binding)) store.bindings -= binding
-        else Utils.logger.warn("Binding $binding doesn't exist, unable to remove")
+    fun removeBinding(binding: Binding): Binding? {
+        return if (doesBindingExist(binding)) {
+            store.bindings -= binding
+            binding
+        }  else {
+            Utils.logger.warn("Binding $binding doesn't exist, unable to remove")
+            null
+        }
     }
 
     fun chunkBoundTo(chunk: Chunk) = store.bindings.find { it.chunk.isInRadius(chunk, it.claimRadius) }
