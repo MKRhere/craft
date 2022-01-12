@@ -1,7 +1,6 @@
 package pw.mkr.craft
 
 import net.fabricmc.api.DedicatedServerModInitializer
-import net.fabricmc.api.ModInitializer
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.text.LiteralText
@@ -9,6 +8,7 @@ import net.minecraft.world.GameMode
 import pw.mkr.craft.binding.BindingBlock
 import pw.mkr.craft.events.chunkentry.ChunkEntryEvent
 import pw.mkr.craft.events.chunkentry.ChunkEntryListener
+import pw.mkr.craft.models.Binding
 import pw.mkr.craft.models.Chunk
 import pw.mkr.craft.portals.PortalBlock
 import pw.mkr.craft.utils.StoreManager
@@ -28,25 +28,40 @@ object ServerInit : DedicatedServerModInitializer {
                 val newBinding = StoreManager.chunkBoundTo(newChunk)
 
                 fun send(msg: String) = player.sendMessage(LiteralText(msg), false)
+                fun inform(action: String, isPlayerClaimer: Boolean, binding: Binding) =
+                    send(
+                        "$action ${
+                            if (isPlayerClaimer) "your"
+                            else "${binding.player}'s"
+                        } claim"
+                    )
 
                 player.server ?: return true
 
                 val serverPlayer = player as ServerPlayerEntity
+                val playerGameMode = serverPlayer.interactionManager.gameMode
+
+                val isPlayerSurvival = playerGameMode == GameMode.SURVIVAL
+                val isPlayerAdventure = playerGameMode == GameMode.ADVENTURE
 
                 // player went inside a bound chunk
                 if (oldBinding == null && newBinding != null) {
-                    if (serverPlayer.interactionManager.gameMode == GameMode.SURVIVAL) {
+                    val isPlayerClaimer = newBinding.player == player.name.asString()
+
+                    if (isPlayerSurvival && !isPlayerClaimer)
                         serverPlayer.changeGameMode(GameMode.ADVENTURE)
-                        send("you've entered ${newBinding.player}'s claim")
-                    }
+
+                    inform("Entered", isPlayerClaimer, newBinding)
                 }
 
                 // player went out of a bound chunk
                 if (oldBinding != null && newBinding == null) {
-                    if (serverPlayer.interactionManager.gameMode == GameMode.ADVENTURE) {
+                    val isPlayerClaimer = oldBinding.player == player.name.asString()
+
+                    if (isPlayerAdventure && !isPlayerClaimer)
                         serverPlayer.changeGameMode(GameMode.SURVIVAL)
-                        send("hope you had a good time in ${oldBinding.player}'s claim!")
-                    }
+
+                    inform("Left", isPlayerClaimer, oldBinding)
                 }
 
                 return true
