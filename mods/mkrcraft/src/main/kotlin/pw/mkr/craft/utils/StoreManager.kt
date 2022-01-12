@@ -7,17 +7,19 @@ import pw.mkr.craft.models.Binding
 import pw.mkr.craft.models.Chunk
 import pw.mkr.craft.models.Store
 import java.io.File
+
 object StoreManager {
     private val gson = GsonBuilder().setPrettyPrinting().create()
 
     @get:Synchronized
     private lateinit var store: Store
 
-    private val storeFile =
-        File(
-            FabricLoader.getInstance().gameDir.toFile(),
-            "${Init.MOD_ID}-store.json"
-        )
+    private val storeDir =
+        FabricLoader.getInstance().gameDir.resolve(
+            "world/${Init.MOD_ID}/store"
+        ).toFile()
+
+    private val storeFile = File(storeDir, "bindings.json")
 
     private fun doesBindingExist(binding: Binding) =
         store.bindings.find { it == binding } != null
@@ -25,6 +27,7 @@ object StoreManager {
     fun init() =
         if (!storeFile.exists()) {
             Utils.logger.info("Store not found, creating one at $storeFile")
+            storeDir.mkdirs()
             store = Store()
             saveToDisk()
         } else {
