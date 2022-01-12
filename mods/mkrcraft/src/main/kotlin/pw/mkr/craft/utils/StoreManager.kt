@@ -55,6 +55,8 @@ object StoreManager {
         }
     }
 
+    fun totalBindingsOf(player: String) = store.bindings.filter { x -> x.player == player }.size
+
     fun chunkBoundTo(chunk: Chunk) = store.bindings.find { it.chunk.isInRadius(chunk, it.claimRadius) }
 
     fun saveToDisk() = storeFile.writeText(gson.toJson(store))
