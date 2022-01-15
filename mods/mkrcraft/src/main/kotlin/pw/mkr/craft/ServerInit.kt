@@ -45,7 +45,7 @@ object ServerInit : DedicatedServerModInitializer {
                 val isPlayerAdventure = playerGameMode == GameMode.ADVENTURE
 
                 // player went inside a bound chunk
-                if (oldBinding == null && newBinding != null) {
+                if ((oldBinding == null && newBinding != null) || oldBinding == newBinding) {
                     val isPlayerClaimer = newBinding.player == player.name.asString()
 
                     if (isPlayerSurvival && !isPlayerClaimer)
