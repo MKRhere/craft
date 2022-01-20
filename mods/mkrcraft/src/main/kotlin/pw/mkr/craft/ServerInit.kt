@@ -24,7 +24,7 @@ object ServerInit : DedicatedServerModInitializer {
 
         ChunkEntryEvent.listen(object : ChunkEntryListener {
             override fun onChunkEntry(player: PlayerEntity, oldChunk: Chunk, newChunk: Chunk): Boolean {
-                val oldBinding = StoreManager.chunkBoundTo(oldChunk)
+				val oldBinding = StoreManager.chunkBoundTo(oldChunk)
                 val newBinding = StoreManager.chunkBoundTo(newChunk)
 
                 fun send(msg: String) = player.sendMessage(LiteralText(msg), false)
@@ -35,8 +35,6 @@ object ServerInit : DedicatedServerModInitializer {
                             else "${binding.player}'s"
                         } claim"
                     )
-
-                player.server ?: return true
 
                 val serverPlayer = player as ServerPlayerEntity
                 val playerGameMode = serverPlayer.interactionManager.gameMode
