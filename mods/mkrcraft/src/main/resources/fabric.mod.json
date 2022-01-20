@@ -27,7 +27,7 @@
 		"client": [
 			{
 				"adapter": "kotlin",
-				"value": "pw.mkr.craft.Init"
+				"value": "pw.mkr.craft.ClientInit"
 			}
 		]
 	},
