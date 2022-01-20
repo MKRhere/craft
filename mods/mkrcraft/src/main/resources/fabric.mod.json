@@ -5,38 +5,38 @@
   "name": "mkr/craft",
   "description": "mkr/craft server-side mod.",
   "authors": [
-    "Muthu Kumar"
+	"Muthu Kumar"
   ],
   "contact": {
-    "homepage": "https://github.com/mkrhere/mkrcraft/",
-    "issues": "https://github.com/mkrhere/mkrcraft/issues/",
-    "sources": "https://github.com/mkrhere/mkrcraft/"
+	"homepage": "https://github.com/mkrhere/mkrcraft/",
+	"issues": "https://github.com/mkrhere/mkrcraft/issues/",
+	"sources": "https://github.com/mkrhere/mkrcraft/"
   },
   "license": "MIT",
   "icon": "assets/mkrcraft/icon.png",
   "environment": "*",
   "entrypoints": {
-    "server": [
-      {
-        "adapter": "kotlin",
-        "value": "pw.mkr.craft.ServerInit"
-      }
-    ],
-    "client": [
-      {
-        "adapter": "kotlin",
-        "value": "pw.mkr.craft.ClientInit"
-      }
-    ]
+	"server": [
+	  {
+		"adapter": "kotlin",
+		"value": "pw.mkr.craft.ServerInit"
+	  }
+	],
+	"client": [
+	  {
+		"adapter": "kotlin",
+		"value": "pw.mkr.craft.ClientInit"
+	  }
+	]
   },
   "mixins": [
-    "mkrcraft.mixins.json"
+	"mkrcraft.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.12.12",
-    "fabric": "*",
-    "fabric-language-kotlin": ">=1.7.0+kotlin.1.6.0",
-    "minecraft": "1.18.x",
-    "java": ">=17"
+	"fabricloader": ">=0.12.12",
+	"fabric": "*",
+	"fabric-language-kotlin": ">=1.7.0+kotlin.1.6.0",
+	"minecraft": "1.18.x",
+	"java": ">=17"
   }
 }
