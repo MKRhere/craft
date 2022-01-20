@@ -2,7 +2,7 @@ package pw.mkr.craft.utils
 
 import com.google.gson.GsonBuilder
 import net.fabricmc.loader.api.FabricLoader
-import pw.mkr.craft.Init
+import pw.mkr.craft.ClientInit
 import pw.mkr.craft.models.Binding
 import pw.mkr.craft.models.Chunk
 import pw.mkr.craft.models.Store
@@ -16,7 +16,7 @@ object StoreManager {
 
     private val storeDir =
         FabricLoader.getInstance().gameDir.resolve(
-            "world/${Init.MOD_ID}/store"
+            "world/${ClientInit.MOD_ID}/store"
         ).toFile()
 
     private val storeFile = File(storeDir, "bindings.json")

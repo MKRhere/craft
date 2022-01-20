@@ -5,7 +5,7 @@ import pw.mkr.craft.blocks.binding.BindingBlock
 import pw.mkr.craft.blocks.portals.PortalBlock
 
 @Suppress("Unused")
-object Init : ClientModInitializer {
+object ClientInit : ClientModInitializer {
     const val MOD_ID = "mkrcraft"
 
     override fun onInitializeClient() {
