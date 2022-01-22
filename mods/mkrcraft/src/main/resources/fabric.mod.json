@@ -2,31 +2,32 @@
 	"schemaVersion": 1,
 	"id": "mkrcraft",
 	"version": "${version}",
-
 	"name": "mkr/craft",
 	"description": "mkr/craft server-side mod.",
 	"authors": ["Muthu Kumar"],
-
 	"contact": {
 		"homepage": "https://github.com/mkrhere/mkrcraft/",
 		"issues": "https://github.com/mkrhere/mkrcraft/issues/",
 		"sources": "https://github.com/mkrhere/mkrcraft/"
 	},
-
 	"license": "MIT",
 	"icon": "assets/mkrcraft/icon.png",
-
 	"environment": "*",
 	"entrypoints": {
-		"main": [
+		"server": [
 			{
 				"adapter": "kotlin",
-				"value": "pw.mkr.craft.Init"
+				"value": "pw.mkr.craft.ServerInit"
+			}
+		],
+		"client": [
+			{
+				"adapter": "kotlin",
+				"value": "pw.mkr.craft.ClientInit"
 			}
 		]
 	},
 	"mixins": ["mkrcraft.mixins.json"],
-
 	"depends": {
 		"fabricloader": ">=0.12.12",
 		"fabric": "*",
