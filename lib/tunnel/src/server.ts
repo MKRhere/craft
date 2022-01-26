@@ -1,4 +1,4 @@
-import { copy, readAll, writeAll } from "./utils.ts";
+import { copy, readAll, writeAll, close } from "./utils.ts";
 
 type Opts = { tunnel: Deno.ListenOptions; proxy: Deno.ListenOptions; maxConns: number };
 
@@ -22,19 +22,19 @@ async function server(opts: Opts) {
 	};
 
 	(async function tunnel(opts: Deno.ListenOptions) {
-		for await (const conn of Deno.listen(opts)) {
+		for await (const tunnel of Deno.listen(opts)) {
 			(async function handle() {
 				const buf = new Uint8Array(10);
-				await readAll(conn, buf);
-				if (!auth(buf)) return conn.close();
+				await readAll(tunnel, buf);
+				if (!auth(buf)) return close(tunnel);
 				console.log("tunnel :: authenticated");
 
-				const idx = getSpot("tunnel", conn);
-				if (idx === null) return conn.close();
+				const idx = getSpot("tunnel", tunnel);
+				if (idx === null) return close(tunnel);
 
 				console.log("tunnel :: spot reserved", idx);
 
-				writeAll(conn, new TextEncoder().encode(String(idx).padEnd(4, " ")));
+				writeAll(tunnel, new TextEncoder().encode(String(idx).padEnd(4, " ")));
 			})();
 		}
 	})(opts.tunnel);
@@ -44,18 +44,18 @@ async function server(opts: Opts) {
 			(async function handle() {
 				const buf = new Uint8Array(10);
 				await readAll(proxy, buf);
-				if (!auth(buf)) return proxy.close();
+				if (!auth(buf)) return close(proxy);
 				console.log("proxy :: authenticated");
 
 				const idx = getSpot("proxy", proxy);
-				if (idx === null) return proxy.close();
+				if (idx === null) return close(proxy);
 
 				console.log("proxy :: spot reserved", idx);
 
 				const tunnel = tunnels[idx];
 				if (!tunnel) {
 					proxies[idx] = null;
-					return proxy.close();
+					return close(proxy);
 				}
 
 				console.log("proxy :: tunnel discovered", idx);
@@ -63,9 +63,7 @@ async function server(opts: Opts) {
 				writeAll(proxy, new TextEncoder().encode(String(idx).padEnd(4, " ")));
 
 				copy(tunnel, proxy).catch(() => {
-					try {
-						tunnel.close();
-					} catch {}
+					close(tunnel, proxy);
 
 					tunnels[idx] = null;
 				});
@@ -77,11 +75,7 @@ async function server(opts: Opts) {
 					console.log("proxy :: client errored, disconnecting");
 				}
 
-				tunnel.close();
-
-				try {
-					proxy.close();
-				} catch {}
+				close(tunnel, proxy);
 
 				console.log("proxy :: tunnel closed", idx);
 

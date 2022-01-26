@@ -1,4 +1,4 @@
-import { copy, readAll } from "./utils.ts";
+import { copy, readAll, close } from "./utils.ts";
 
 type Opts = { server: Deno.ConnectOptions; minecraft: Deno.ConnectOptions };
 
@@ -20,8 +20,7 @@ async function tunnelClient(opts: Opts) {
 		console.log("tunnel :: connection errored, closing");
 	}
 
-	tunnel.close();
-	mc.close();
+	close(tunnel, mc);
 
 	tunnelClient(opts);
 }
@@ -37,16 +36,7 @@ async function proxyClient(opts: Opts) {
 	for await (const mc of Deno.listen(opts.minecraft)) {
 		console.log("proxy :: connected from Minecraft");
 
-		copy(proxy, mc).catch(() => {
-			try {
-				mc.close();
-				console.log("proxy :: errored, closing Minecraft");
-			} catch {}
-			try {
-				proxy.close();
-				console.log("proxy :: errored, closing proxy");
-			} catch {}
-		});
+		copy(proxy, mc).catch(() => close(mc, proxy));
 
 		try {
 			await copy(mc, proxy);
@@ -55,9 +45,7 @@ async function proxyClient(opts: Opts) {
 			console.log("proxy :: errored, closing proxy");
 		}
 
-		try {
-			proxy.close();
-		} catch {}
+		close(mc, proxy);
 	}
 }
 

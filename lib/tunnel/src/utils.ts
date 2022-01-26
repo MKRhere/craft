@@ -45,3 +45,11 @@ export const copy = async (r: Deno.Reader, w: Deno.Writer) => {
 		await w.write(buf.subarray(0, result));
 	}
 };
+
+export const close = (...conns: Deno.Conn[]) => {
+	conns.forEach(conn => {
+		try {
+			conn.close();
+		} catch {}
+	});
+};
