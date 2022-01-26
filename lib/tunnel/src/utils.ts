@@ -1,3 +1,13 @@
+type AnyF = (...args: any[]) => void;
+
+export const tryElse = <F extends AnyF, E extends AnyF>(f: F, c: E) => {
+	try {
+		f();
+	} catch {
+		c();
+	}
+};
+
 export const assert = (ok: boolean) => {
 	if (!ok) {
 		throw new Error("Assertion failed!");

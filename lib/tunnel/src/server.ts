@@ -40,31 +40,48 @@ async function server(opts: Opts) {
 	})(opts.tunnel);
 
 	(async function proxy(opts: Deno.ListenOptions) {
-		for await (const conn of Deno.listen(opts)) {
+		for await (const proxy of Deno.listen(opts)) {
 			(async function handle() {
 				const buf = new Uint8Array(10);
-				await readAll(conn, buf);
-				if (!auth(buf)) return conn.close();
+				await readAll(proxy, buf);
+				if (!auth(buf)) return proxy.close();
 				console.log("proxy :: authenticated");
 
-				const idx = getSpot("proxy", conn);
-				if (idx === null) return conn.close();
+				const idx = getSpot("proxy", proxy);
+				if (idx === null) return proxy.close();
 
 				console.log("proxy :: spot reserved", idx);
 
 				const tunnel = tunnels[idx];
-				if (!tunnel) return conn.close();
+				if (!tunnel) {
+					proxies[idx] = null;
+					return proxy.close();
+				}
 
 				console.log("proxy :: tunnel discovered", idx);
 
-				writeAll(conn, new TextEncoder().encode(String(idx).padEnd(4, " ")));
+				writeAll(proxy, new TextEncoder().encode(String(idx).padEnd(4, " ")));
 
-				copy(tunnel, conn);
-				await copy(conn, tunnel);
+				copy(tunnel, proxy).catch(() => {
+					try {
+						tunnel.close();
+					} catch {}
 
-				console.log("proxy :: client disconnected", idx);
+					tunnels[idx] = null;
+				});
+
+				try {
+					await copy(proxy, tunnel);
+					console.log("proxy :: client disconnected", idx);
+				} catch {
+					console.log("proxy :: client errored, disconnecting");
+				}
 
 				tunnel.close();
+
+				try {
+					proxy.close();
+				} catch {}
 
 				console.log("proxy :: tunnel closed", idx);
 
