@@ -15,23 +15,25 @@ async function tunnelClient(opts: Opts): Promise<void> {
 		return tunnelClient(opts);
 	}
 
-	console.log("tunnel :: connected to server, slot", new TextDecoder().decode(buf));
+	const idx = new TextDecoder().decode(buf);
+
+	console.log("tunnel :: connected to server, slot", idx);
 
 	// await 4 more bytes
 	await readAll(tunnel, buf);
 
 	// connect to MC server
 	const mc = await Deno.connect(opts.minecraft);
-	console.log("tunnel :: connected to Minecraft");
+	console.log("tunnel :: connected to Minecraft", idx);
 
 	mc.write(buf);
 
 	try {
 		await Promise.race([copy(mc, tunnel), copy(tunnel, mc)]);
-		console.log("tunnel :: connection closed");
+		console.log("tunnel :: connection closed", idx);
 	} catch (e) {
 		console.error(e);
-		console.log("tunnel :: connection errored, closing");
+		console.log("tunnel :: connection errored, closing", idx);
 	}
 
 	close(tunnel, mc);
@@ -49,27 +51,28 @@ async function proxyClient(opts: Opts): Promise<void> {
 
 	if (res === null) {
 		console.log("proxy :: unable to reserve, retrying...");
-		await sleep(500);
-		return proxyClient(opts);
+		throw new Error("Connection closed");
 	}
 
-	console.log("proxy :: connected to server, slot", new TextDecoder().decode(buf));
+	const idx = new TextDecoder().decode(buf);
+
+	console.log("proxy :: connected to server, slot", idx);
 
 	// listen for MC client to connect
-	for await (const mc of Deno.listen(opts.minecraft)) {
-		console.log("proxy :: connected from Minecraft");
+	const server = await Deno.listen(opts.minecraft);
+	const mc = await server.accept();
 
-		try {
-			await Promise.race([copy(mc, proxy), copy(proxy, mc)]);
-			console.log("proxy :: disconnected");
-		} catch (e) {
-			console.error(e);
-			console.log("proxy :: errored, closing proxy");
-		} finally {
-			close(mc, proxy);
-			await sleep(500);
-			return proxyClient(opts);
-		}
+	console.log("proxy :: connected from Minecraft", idx);
+
+	try {
+		await Promise.race([copy(mc, proxy), copy(proxy, mc)]);
+		console.log("proxy :: disconnected", idx);
+	} catch (e) {
+		console.error(e);
+		console.log("proxy :: errored, closing proxy", idx);
+	} finally {
+		close(server, mc, proxy);
+		throw new Error("Connection closed");
 	}
 }
 
@@ -77,4 +80,15 @@ Array(20)
 	.fill(null)
 	.forEach(() => tunnelClient({ server: { port: 15000 }, minecraft: { port: 25888 } }));
 
-proxyClient({ server: { port: 25565 }, minecraft: { port: 25000 } });
+async function init({ port }: { port: number }) {
+	const opts = { server: { port: 25565 }, minecraft: { port } };
+	try {
+		await proxyClient(opts);
+	} catch {
+		await sleep(500);
+		init({ port });
+	}
+}
+
+init({ port: 25000 });
+init({ port: 25001 });
