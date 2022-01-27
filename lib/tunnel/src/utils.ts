@@ -1,6 +1,10 @@
 type AnyF = (...args: any[]) => void;
 
+export * from "./deferred.ts";
+
 export const sleep = (t: number) => new Promise(r => setTimeout(r, t));
+
+export const noop = () => void 0;
 
 export const tryElse = <F extends AnyF, E extends AnyF>(f: F, c: E) => {
 	try {
@@ -54,7 +58,7 @@ export const ends = async (r: Deno.Reader) => {
 	return true;
 };
 
-export const close = (...conns: Deno.Conn[]) => {
+export const close = (...conns: Deno.Closer[]) => {
 	conns.forEach(conn => {
 		try {
 			conn.close();
