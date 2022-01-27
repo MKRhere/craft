@@ -1,5 +1,7 @@
 type AnyF = (...args: any[]) => void;
 
+export const sleep = (t: number) => new Promise(r => setTimeout(r, t));
+
 export const tryElse = <F extends AnyF, E extends AnyF>(f: F, c: E) => {
 	try {
 		f();
@@ -44,6 +46,12 @@ export const copy = async (r: Deno.Reader, w: Deno.Writer) => {
 		}
 		await w.write(buf.subarray(0, result));
 	}
+};
+
+export const ends = async (r: Deno.Reader) => {
+	let buf = new Uint8Array(65535);
+	while ((await r.read(buf)) !== null) {}
+	return true;
 };
 
 export const close = (...conns: Deno.Conn[]) => {

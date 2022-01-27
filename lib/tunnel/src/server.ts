@@ -1,4 +1,4 @@
-import { copy, readAll, writeAll, close } from "./utils.ts";
+import { copy, readAll, writeAll, ends, close } from "./utils.ts";
 
 type Opts = { tunnel: Deno.ListenOptions; proxy: Deno.ListenOptions; maxConns: number };
 
@@ -12,7 +12,7 @@ async function server(opts: Opts) {
 	const tunnels: Conns = Array(opts.maxConns).fill(null);
 	const proxies: Conns = Array(opts.maxConns).fill(null);
 
-	const getSpot = (type: "proxy" | "tunnel", socket: Deno.Conn) => {
+	const reserveSlot = (type: "proxy" | "tunnel", socket: Deno.Conn) => {
 		const arr = type === "proxy" ? proxies : tunnels;
 		const idx = arr.findIndex(item => item === null);
 
@@ -29,10 +29,10 @@ async function server(opts: Opts) {
 				if (!auth(buf)) return close(tunnel);
 				console.log("tunnel :: authenticated");
 
-				const idx = getSpot("tunnel", tunnel);
+				const idx = reserveSlot("tunnel", tunnel);
 				if (idx === null) return close(tunnel);
 
-				console.log("tunnel :: spot reserved", idx);
+				console.log("tunnel :: slot reserved", idx);
 
 				writeAll(tunnel, new TextEncoder().encode(String(idx).padEnd(4, " ")));
 			})();
@@ -47,10 +47,10 @@ async function server(opts: Opts) {
 				if (!auth(buf)) return close(proxy);
 				console.log("proxy :: authenticated");
 
-				const idx = getSpot("proxy", proxy);
+				const idx = reserveSlot("proxy", proxy);
 				if (idx === null) return close(proxy);
 
-				console.log("proxy :: spot reserved", idx);
+				console.log("proxy :: slot reserved", idx);
 
 				const tunnel = tunnels[idx];
 				if (!tunnel) {
@@ -62,20 +62,15 @@ async function server(opts: Opts) {
 
 				writeAll(proxy, new TextEncoder().encode(String(idx).padEnd(4, " ")));
 
-				copy(tunnel, proxy).catch(() => {
-					close(tunnel, proxy);
-
-					tunnels[idx] = null;
-				});
-
 				try {
-					await copy(proxy, tunnel);
-					console.log("proxy :: client disconnected", idx);
-				} catch {
-					console.log("proxy :: client errored, disconnecting");
+					await Promise.race([copy(tunnel, proxy), copy(proxy, tunnel)]);
+					console.log("proxy :: disconnected", idx);
+				} catch (e) {
+					console.error(e);
+					console.log("proxy :: errored, disconnecting");
+				} finally {
+					close(tunnel, proxy);
 				}
-
-				close(tunnel, proxy);
 
 				console.log("proxy :: tunnel closed", idx);
 
