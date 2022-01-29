@@ -66,6 +66,8 @@ export async function proxyClient(opts: Opts): Promise<void> {
 
 	console.log("proxy :: connected to server, slot", idx);
 
+	await Deno.permissions.request({ name: "net", host: opts.minecraft.hostname || "0.0.0.0" });
+
 	// listen for MC client to connect
 	const server = await Deno.listen(opts.minecraft);
 	const mc = await server.accept();

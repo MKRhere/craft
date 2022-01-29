@@ -108,9 +108,9 @@ async function main(): Promise<void> {
 				server: { port: args["--server"][1], hostname: args["--server"][0], pwd: args["--pwd"] },
 				minecraft: { port: args["--port"] },
 			});
-		} catch {
-			await sleep(500);
-			return main();
+		} catch (e) {
+			console.error(e);
+			console.log("proxy closed");
 		}
 	}
 
