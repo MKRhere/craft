@@ -1,11 +1,13 @@
 import { sleep, copy, readAll, close } from "./utils.ts";
 
-type Opts = { server: Deno.ConnectOptions; minecraft: Deno.ConnectOptions };
+type Opts = { server: Deno.ConnectOptions & { pwd: string }; minecraft: Deno.ConnectOptions };
 
-async function tunnelClient(opts: Opts): Promise<void> {
+export async function tunnelClient(opts: Opts): Promise<void> {
+	await Deno.permissions.request({ name: "net", host: opts.server.hostname });
+
 	const tunnel = await Deno.connect(opts.server);
 
-	tunnel.write(new TextEncoder().encode("password  "));
+	tunnel.write(new TextEncoder().encode(opts.server.pwd.padEnd(10)));
 	const buf = new Uint8Array(4);
 	const res = await readAll(tunnel, buf);
 
@@ -42,10 +44,12 @@ async function tunnelClient(opts: Opts): Promise<void> {
 	return tunnelClient(opts);
 }
 
-async function proxyClient(opts: Opts): Promise<void> {
+export async function proxyClient(opts: Opts): Promise<void> {
+	await Deno.permissions.request({ name: "net", host: opts.server.hostname });
+
 	const proxy = await Deno.connect(opts.server);
 
-	proxy.write(new TextEncoder().encode("password  "));
+	proxy.write(new TextEncoder().encode(opts.server.pwd.padEnd(10)));
 	const buf = new Uint8Array(4);
 	const res = await readAll(proxy, buf);
 
@@ -75,20 +79,3 @@ async function proxyClient(opts: Opts): Promise<void> {
 		throw new Error("Connection closed");
 	}
 }
-
-Array(20)
-	.fill(null)
-	.forEach(() => tunnelClient({ server: { port: 15000 }, minecraft: { port: 25888 } }));
-
-async function init({ port }: { port: number }) {
-	const opts = { server: { port: 25565 }, minecraft: { port } };
-	try {
-		await proxyClient(opts);
-	} catch {
-		await sleep(500);
-		init({ port });
-	}
-}
-
-init({ port: 25000 });
-init({ port: 25001 });

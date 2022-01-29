@@ -1,15 +1,19 @@
 import { Deferred, deferred, noop, copy, readAll, writeAll, close } from "./utils.ts";
 
-type Opts = { tunnel: Deno.ListenOptions; proxy: Deno.ListenOptions; maxConns: number };
+type Opts = {
+	tunnel: Deno.ListenOptions & { pwd: string };
+	proxy: Deno.ListenOptions & { pwd: string };
+	maxConns: number;
+};
 
 type Tunnel = (Deno.Conn & { init: Deferred<Uint8Array> }) | null;
 type Proxy = Deno.Conn | null;
 
-function auth(buf: Uint8Array) {
-	return new TextDecoder().decode(buf) === "password  ";
+function auth(buf: Uint8Array, pwd: string) {
+	return new TextDecoder().decode(buf) === pwd.padEnd(10);
 }
 
-async function server(opts: Opts) {
+export async function server(opts: Opts) {
 	const tunnels: Tunnel[] = Array(opts.maxConns).fill(null);
 	const proxies: Proxy[] = Array(opts.maxConns).fill(null);
 
@@ -22,14 +26,18 @@ async function server(opts: Opts) {
 		return idx;
 	};
 
-	(async function tunnel(opts: Deno.ListenOptions) {
+	(async function tunnel(opts: Opts["tunnel"]) {
+		await Deno.permissions.request({ name: "net", host: opts.hostname || "0.0.0.0" });
+
+		console.log("Starting tunnel server:", opts);
+
 		for await (const conn of Deno.listen(opts)) {
 			(async function handle() {
 				const tunnel: Tunnel = Object.assign(conn, { init: deferred<Uint8Array>() });
 
 				const buf = new Uint8Array(10);
 				await readAll(tunnel, buf);
-				if (!auth(buf)) return close(tunnel);
+				if (!auth(buf, opts.pwd)) return close(tunnel);
 				console.log("tunnel :: authenticated");
 
 				const idx = reserveSlot("tunnel", tunnel);
@@ -59,12 +67,16 @@ async function server(opts: Opts) {
 		}
 	})(opts.tunnel);
 
-	(async function proxy(opts: Deno.ListenOptions) {
+	(async function proxy(opts: Opts["proxy"]) {
+		await Deno.permissions.request({ name: "net", host: opts.hostname || "0.0.0.0" });
+
+		console.log("Starting proxy server:", opts);
+
 		for await (const proxy of Deno.listen(opts)) {
 			(async function handle() {
 				const buf = new Uint8Array(10);
 				await readAll(proxy, buf);
-				if (!auth(buf)) return close(proxy);
+				if (!auth(buf, opts.pwd)) return close(proxy);
 				console.log("proxy :: authenticated");
 
 				const idx = reserveSlot("proxy", proxy);
@@ -114,5 +126,3 @@ async function server(opts: Opts) {
 		console.log("-------------------------");
 	}, 5000);
 }
-
-server({ maxConns: 20, proxy: { port: 25565 }, tunnel: { port: 15000 } });
