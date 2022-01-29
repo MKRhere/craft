@@ -33,9 +33,7 @@ export async function server(opts: Opts) {
 
 		for await (const conn of Deno.listen(opts)) {
 			(async function handle() {
-				timeout(conn);
-
-				const tunnel: Tunnel = Object.assign(conn, { init: deferred<Uint8Array>() });
+				const tunnel: Tunnel = Object.assign(timeout(conn), { init: deferred<Uint8Array>() });
 
 				const buf = new Uint8Array(10);
 				await readAll(tunnel, buf);
@@ -72,9 +70,9 @@ export async function server(opts: Opts) {
 	(async function proxy(opts: Opts["proxy"]) {
 		console.log("Starting proxy server:", opts);
 
-		for await (const proxy of Deno.listen(opts)) {
+		for await (const conn of Deno.listen(opts)) {
 			(async function handle() {
-				timeout(proxy);
+				const proxy = timeout(conn);
 
 				const buf = new Uint8Array(10);
 				await readAll(proxy, buf);

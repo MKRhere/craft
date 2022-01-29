@@ -7,8 +7,7 @@ export async function tunnelClient(opts: Opts): Promise<void> {
 
 	console.log("Connecting to tunnel:", opts.server);
 
-	const tunnel = await Deno.connect(opts.server);
-	timeout(tunnel);
+	const tunnel = timeout(await Deno.connect(opts.server));
 
 	tunnel.write(new TextEncoder().encode(opts.server.pwd.padEnd(10)));
 	const buf = new Uint8Array(4);
@@ -24,16 +23,18 @@ export async function tunnelClient(opts: Opts): Promise<void> {
 
 	console.log("tunnel :: connected to server, slot", idx);
 
-	// await 4 more bytes
-	await readAll(tunnel, buf);
-
-	// connect to MC server
-	const mc = await Deno.connect(opts.minecraft);
-	console.log("tunnel :: connected to Minecraft", idx);
-
-	mc.write(buf);
+	let mc: Deno.Conn | undefined = undefined;
 
 	try {
+		// await 4 more bytes
+		await readAll(tunnel, buf);
+
+		// connect to MC server
+		mc = await Deno.connect(opts.minecraft);
+		console.log("tunnel :: connected to Minecraft", idx);
+
+		mc.write(buf);
+
 		await race([copy(mc, tunnel), copy(tunnel, mc)]);
 		console.log("tunnel :: connection closed", idx);
 	} catch (e) {
@@ -52,8 +53,7 @@ export async function proxyClient(opts: Opts): Promise<void> {
 
 	console.log("Connecting to proxy:", opts.server);
 
-	const proxy = await Deno.connect(opts.server);
-	timeout(proxy);
+	const proxy = timeout(await Deno.connect(opts.server));
 
 	proxy.write(new TextEncoder().encode(opts.server.pwd.padEnd(10)));
 	const buf = new Uint8Array(4);
@@ -73,8 +73,7 @@ export async function proxyClient(opts: Opts): Promise<void> {
 
 	console.log("proxy :: ready for Minecraft to connect");
 
-	const mc = await server.accept();
-	timeout(mc);
+	const mc = timeout(await server.accept());
 
 	console.log("proxy :: connected from Minecraft", idx);
 

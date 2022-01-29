@@ -120,7 +120,7 @@ async function main(): Promise<void> {
 		Array(20)
 			.fill(null)
 			.forEach(async (_, i) => {
-				await sleep(500 * i * i);
+				await sleep(500 * i);
 
 				tunnelClient({
 					server: { port: args["--server"][1], hostname: args["--server"][0], pwd: args["--pwd"] },

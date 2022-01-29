@@ -25,10 +25,10 @@ export const readAll = async (r: Deno.Reader, buf: Uint8Array) => {
 	return bytesRead;
 };
 
-export const close = (...conns: Deno.Closer[]) => {
+export const close = (...conns: (Deno.Closer | undefined)[]) => {
 	conns.forEach(conn => {
 		try {
-			conn.close();
+			conn?.close();
 		} catch {}
 	});
 };
@@ -43,20 +43,39 @@ export const race = (promises: Promise<any>[]) =>
 /**
  * Close connection if no activity in 30 seconds
  */
-export const timeout = (conn: Deno.Conn, ms: number = 30 * 1000) => {
-	let timer = setTimeout(() => close(conn), ms);
-	const read = conn.read.bind(conn);
-	const write = conn.write.bind(conn);
+export const timeout = (conn: Deno.Conn, ms: number = 45 * 1000): Deno.Conn => {
+	let closed = false;
 
-	conn.read = function (p) {
-		clearTimeout(timer);
-		timer = setTimeout(() => close(conn), ms);
-		return read(p);
-	};
+	function closer() {
+		close(conn);
+		closed = true;
+	}
 
-	conn.write = function (p) {
-		clearTimeout(timer);
-		timer = setTimeout(() => close(conn), ms);
-		return write(p);
+	let timer = setTimeout(closer, ms);
+
+	return {
+		localAddr: conn.localAddr,
+		remoteAddr: conn.remoteAddr,
+		rid: conn.rid,
+		closeWrite: conn.closeWrite,
+		async read(p) {
+			if (closed) return null;
+
+			clearTimeout(timer);
+			timer = setTimeout(closer, ms);
+			return conn.read(p);
+		},
+		async write(p) {
+			clearTimeout(timer);
+			timer = setTimeout(closer, ms);
+			return conn.write(p);
+		},
+		close() {
+			if (closed) return;
+
+			clearTimeout(timer);
+			closed = true;
+			return conn.close();
+		},
 	};
 };
