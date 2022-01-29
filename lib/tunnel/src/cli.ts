@@ -5,9 +5,9 @@ import { server } from "./server.ts";
 const help = `
 Usage:
 
-  tunnel proxy --pwd <password> --server craft.mkr.pw:25010 --port 25565
-  tunnel tunnel --pwd <password> --server craft.mkr.pw:25252 --port 25565
-  tunnel server --proxy 25010 --proxy-pwd <password> --tunnel 25252 --tunnel-pwd <password> --max-conn 20
+  mkrt proxy --pwd <password> --server craft.mkr.pw:25010 --port 25565
+  mkrt tunnel --pwd <password> --server craft.mkr.pw:25252 --port 25565
+  mkrt server --proxy 25010 --proxy-pwd <password> --tunnel 25252 --tunnel-pwd <password> --max-conn 20
 `.trim();
 
 const chunk = <T>(arr: T[], size: number) =>
