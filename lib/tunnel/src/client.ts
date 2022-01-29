@@ -5,6 +5,8 @@ type Opts = { server: Deno.ConnectOptions & { pwd: string }; minecraft: Deno.Con
 export async function tunnelClient(opts: Opts): Promise<void> {
 	await Deno.permissions.request({ name: "net", host: opts.server.hostname });
 
+	console.log("Connecting to tunnel:", opts.server);
+
 	const tunnel = await Deno.connect(opts.server);
 
 	tunnel.write(new TextEncoder().encode(opts.server.pwd.padEnd(10)));
@@ -46,6 +48,8 @@ export async function tunnelClient(opts: Opts): Promise<void> {
 
 export async function proxyClient(opts: Opts): Promise<void> {
 	await Deno.permissions.request({ name: "net", host: opts.server.hostname });
+
+	console.log("Connecting to proxy:", opts.server);
 
 	const proxy = await Deno.connect(opts.server);
 
