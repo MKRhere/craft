@@ -32,3 +32,10 @@ export const close = (...conns: Deno.Closer[]) => {
 		} catch {}
 	});
 };
+
+const catchAllIgnore = (promises: Promise<any>[]) => promises.forEach(promise => promise.catch(noop));
+
+export const race = (promises: Promise<any>[]) =>
+	Promise.race(promises)
+		.then(() => catchAllIgnore(promises))
+		.catch(e => (catchAllIgnore(promises), Promise.reject(e)));

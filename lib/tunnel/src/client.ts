@@ -1,4 +1,4 @@
-import { sleep, copy, readAll, close } from "./utils.ts";
+import { sleep, copy, readAll, race, close } from "./utils.ts";
 
 type Opts = { server: Deno.ConnectOptions & { pwd: string }; minecraft: Deno.ConnectOptions };
 
@@ -33,7 +33,7 @@ export async function tunnelClient(opts: Opts): Promise<void> {
 	mc.write(buf);
 
 	try {
-		await Promise.race([copy(mc, tunnel), copy(tunnel, mc)]);
+		await race([copy(mc, tunnel), copy(tunnel, mc)]);
 		console.log("tunnel :: connection closed", idx);
 	} catch (e) {
 		console.error(e);
@@ -76,7 +76,7 @@ export async function proxyClient(opts: Opts): Promise<void> {
 	console.log("proxy :: connected from Minecraft", idx);
 
 	try {
-		await Promise.race([copy(mc, proxy), copy(proxy, mc)]);
+		await race([copy(mc, proxy), copy(proxy, mc)]);
 		console.log("proxy :: disconnected", idx);
 	} catch (e) {
 		console.error(e);

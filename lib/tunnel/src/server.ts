@@ -1,4 +1,4 @@
-import { Deferred, deferred, noop, copy, readAll, writeAll, close } from "./utils.ts";
+import { Deferred, deferred, noop, copy, readAll, writeAll, race, close } from "./utils.ts";
 
 type Opts = {
 	tunnel: Deno.ListenOptions & { pwd: string };
@@ -99,7 +99,7 @@ export async function server(opts: Opts) {
 					await writeAll(proxy, init);
 					const c2 = copy(tunnel, proxy);
 
-					await Promise.race([c1, c2]);
+					await race([c1, c2]);
 					console.log("proxy :: disconnected", idx);
 				} catch (e) {
 					c1.catch(() => noop);
