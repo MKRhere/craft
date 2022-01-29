@@ -110,7 +110,9 @@ async function main(): Promise<void> {
 			});
 		} catch (e) {
 			console.error(e);
-			console.log("proxy closed");
+			console.log("proxy closed, restarting...");
+			await sleep(500);
+			return main();
 		}
 	}
 
