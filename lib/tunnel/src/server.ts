@@ -14,6 +14,8 @@ function auth(buf: Uint8Array, pwd: string) {
 }
 
 export async function server(opts: Opts) {
+	await Deno.permissions.request({ name: "net" });
+
 	const tunnels: Tunnel[] = Array(opts.maxConns).fill(null);
 	const proxies: Proxy[] = Array(opts.maxConns).fill(null);
 
@@ -27,8 +29,6 @@ export async function server(opts: Opts) {
 	};
 
 	(async function tunnel(opts: Opts["tunnel"]) {
-		await Deno.permissions.request({ name: "net", host: opts.hostname || "0.0.0.0" });
-
 		console.log("Starting tunnel server:", opts);
 
 		for await (const conn of Deno.listen(opts)) {
@@ -68,8 +68,6 @@ export async function server(opts: Opts) {
 	})(opts.tunnel);
 
 	(async function proxy(opts: Opts["proxy"]) {
-		await Deno.permissions.request({ name: "net", host: opts.hostname || "0.0.0.0" });
-
 		console.log("Starting proxy server:", opts);
 
 		for await (const proxy of Deno.listen(opts)) {

@@ -3,7 +3,7 @@ import { sleep, copy, readAll, close } from "./utils.ts";
 type Opts = { server: Deno.ConnectOptions & { pwd: string }; minecraft: Deno.ConnectOptions };
 
 export async function tunnelClient(opts: Opts): Promise<void> {
-	await Deno.permissions.request({ name: "net", host: opts.server.hostname });
+	await Deno.permissions.request({ name: "net" });
 
 	console.log("Connecting to tunnel:", opts.server);
 
@@ -47,7 +47,7 @@ export async function tunnelClient(opts: Opts): Promise<void> {
 }
 
 export async function proxyClient(opts: Opts): Promise<void> {
-	await Deno.permissions.request({ name: "net", host: opts.server.hostname });
+	await Deno.permissions.request({ name: "net" });
 
 	console.log("Connecting to proxy:", opts.server);
 
@@ -66,10 +66,11 @@ export async function proxyClient(opts: Opts): Promise<void> {
 
 	console.log("proxy :: connected to server, slot", idx);
 
-	await Deno.permissions.request({ name: "net", host: opts.minecraft.hostname || "0.0.0.0" });
-
 	// listen for MC client to connect
 	const server = await Deno.listen(opts.minecraft);
+
+	console.log("proxy :: ready for Minecraft to connect");
+
 	const mc = await server.accept();
 
 	console.log("proxy :: connected from Minecraft", idx);
