@@ -117,12 +117,14 @@ async function main(): Promise<void> {
 	if (args.cmd === "tunnel") {
 		Array(20)
 			.fill(null)
-			.forEach(() =>
+			.forEach(async (_, i) => {
+				await sleep(500 * i);
+
 				tunnelClient({
-					server: { port: 15000, hostname: args["--server"][0], pwd: args["--pwd"] },
-					minecraft: { port: 25888 },
-				}),
-			);
+					server: { port: args["--server"][1], hostname: args["--server"][0], pwd: args["--pwd"] },
+					minecraft: { port: args["--port"] },
+				});
+			});
 	}
 }
 
