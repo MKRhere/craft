@@ -1,4 +1,4 @@
-import { sleep, copy, readAll, race, close } from "./utils.ts";
+import { sleep, copy, readAll, race, close, timeout } from "./utils.ts";
 
 type Opts = { server: Deno.ConnectOptions & { pwd: string }; minecraft: Deno.ConnectOptions };
 
@@ -8,6 +8,7 @@ export async function tunnelClient(opts: Opts): Promise<void> {
 	console.log("Connecting to tunnel:", opts.server);
 
 	const tunnel = await Deno.connect(opts.server);
+	timeout(tunnel);
 
 	tunnel.write(new TextEncoder().encode(opts.server.pwd.padEnd(10)));
 	const buf = new Uint8Array(4);
@@ -52,6 +53,7 @@ export async function proxyClient(opts: Opts): Promise<void> {
 	console.log("Connecting to proxy:", opts.server);
 
 	const proxy = await Deno.connect(opts.server);
+	timeout(proxy);
 
 	proxy.write(new TextEncoder().encode(opts.server.pwd.padEnd(10)));
 	const buf = new Uint8Array(4);
@@ -72,6 +74,7 @@ export async function proxyClient(opts: Opts): Promise<void> {
 	console.log("proxy :: ready for Minecraft to connect");
 
 	const mc = await server.accept();
+	timeout(mc);
 
 	console.log("proxy :: connected from Minecraft", idx);
 

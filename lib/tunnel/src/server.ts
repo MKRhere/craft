@@ -1,4 +1,4 @@
-import { Deferred, deferred, noop, copy, readAll, writeAll, race, close } from "./utils.ts";
+import { Deferred, deferred, noop, copy, readAll, writeAll, race, close, timeout } from "./utils.ts";
 
 type Opts = {
 	tunnel: Deno.ListenOptions & { pwd: string };
@@ -33,6 +33,8 @@ export async function server(opts: Opts) {
 
 		for await (const conn of Deno.listen(opts)) {
 			(async function handle() {
+				timeout(conn);
+
 				const tunnel: Tunnel = Object.assign(conn, { init: deferred<Uint8Array>() });
 
 				const buf = new Uint8Array(10);
@@ -72,6 +74,8 @@ export async function server(opts: Opts) {
 
 		for await (const proxy of Deno.listen(opts)) {
 			(async function handle() {
+				timeout(proxy);
+
 				const buf = new Uint8Array(10);
 				await readAll(proxy, buf);
 				if (!auth(buf, opts.pwd)) return close(proxy);

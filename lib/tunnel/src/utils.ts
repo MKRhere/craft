@@ -39,3 +39,24 @@ export const race = (promises: Promise<any>[]) =>
 	Promise.race(promises)
 		.then(() => catchAllIgnore(promises))
 		.catch(e => (catchAllIgnore(promises), Promise.reject(e)));
+
+/**
+ * Close connection if no activity in 30 seconds
+ */
+export const timeout = (conn: Deno.Conn, ms: number = 30 * 1000) => {
+	let timer = setTimeout(() => close(conn), ms);
+	const read = conn.read.bind(conn);
+	const write = conn.write.bind(conn);
+
+	conn.read = function (p) {
+		clearTimeout(timer);
+		timer = setTimeout(() => close(conn), ms);
+		return read(p);
+	};
+
+	conn.write = function (p) {
+		clearTimeout(timer);
+		timer = setTimeout(() => close(conn), ms);
+		return write(p);
+	};
+};
