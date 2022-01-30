@@ -29,14 +29,21 @@ export async function server(opts: Opts) {
 	};
 
 	(async function tunnel(opts: Opts["tunnel"]) {
-		console.log("Starting tunnel server:", opts);
+		console.log("tunnel :: starting server:", opts);
 
 		for await (const conn of Deno.listen(opts)) {
 			(async function handle() {
 				const tunnel: Tunnel = Object.assign(timeout(conn), { init: deferred<Uint8Array>() });
 
 				const buf = new Uint8Array(10);
-				await readAll(tunnel, buf);
+
+				try {
+					await readAll(tunnel, buf);
+				} catch {
+					// close and return, let client restart connection
+					return close(tunnel);
+				}
+
 				if (!auth(buf, opts.pwd)) return close(tunnel);
 				console.log("tunnel :: authenticated");
 
@@ -45,12 +52,21 @@ export async function server(opts: Opts) {
 
 				console.log("tunnel :: slot reserved", idx);
 
-				writeAll(tunnel, new TextEncoder().encode(String(idx).padEnd(4, " ")));
+				try {
+					await writeAll(tunnel, new TextEncoder().encode(String(idx).padEnd(4, " ")));
+				} catch {
+					// close and return, let client restart connection
+					return close(tunnel);
+				}
 
 				const hang = new Uint8Array(1);
 
 				const reject = (e: Error) => {
-					if (proxies[idx]) tunnel.init.reject(e);
+					if (proxies[idx]) {
+						// reject here and let proxy handler handle this error
+						tunnel.init.reject(e);
+					}
+
 					console.log("tunnel :: errored, disconnecting", idx);
 					close(tunnel);
 					tunnels[idx] = null;
@@ -68,14 +84,21 @@ export async function server(opts: Opts) {
 	})(opts.tunnel);
 
 	(async function proxy(opts: Opts["proxy"]) {
-		console.log("Starting proxy server:", opts);
+		console.log("proxy :: starting server:", opts);
 
 		for await (const conn of Deno.listen(opts)) {
 			(async function handle() {
 				const proxy = timeout(conn);
 
 				const buf = new Uint8Array(10);
-				await readAll(proxy, buf);
+
+				try {
+					await readAll(proxy, buf);
+				} catch {
+					// close and return, let client restart connection
+					return close(proxy);
+				}
+
 				if (!auth(buf, opts.pwd)) return close(proxy);
 				console.log("proxy :: authenticated");
 
@@ -92,11 +115,13 @@ export async function server(opts: Opts) {
 
 				console.log("proxy :: tunnel discovered", idx);
 
-				writeAll(proxy, new TextEncoder().encode(String(idx).padEnd(4, " ")));
-
-				const c1 = copy(proxy, tunnel);
+				let c1: Promise<number> = Promise.resolve(0);
 
 				try {
+					await writeAll(proxy, new TextEncoder().encode(String(idx).padEnd(4, " ")));
+
+					c1 = copy(proxy, tunnel);
+
 					const init = await tunnel.init;
 					await writeAll(proxy, init);
 					const c2 = copy(tunnel, proxy);
@@ -120,9 +145,9 @@ export async function server(opts: Opts) {
 	})(opts.proxy);
 
 	setInterval(() => {
-		console.log("------ healthcheck ------");
+		console.log("                 ------ healthcheck ------");
 		console.log("tunnels ::", tunnels.map(tunnel => (tunnel ? "O" : "C")).join(" "));
 		console.log("proxies ::", proxies.map(proxies => (proxies ? "O" : "C")).join(" "));
-		console.log("-------------------------");
+		console.log("                 -------------------------");
 	}, 5000);
 }

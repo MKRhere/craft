@@ -1,4 +1,4 @@
-import { sleep, copy, readAll, race, close, timeout } from "./utils.ts";
+import { copy, readAll, writeAll, race, close, timeout } from "./utils.ts";
 
 type Opts = { server: Deno.ConnectOptions & { pwd: string }; minecraft: Deno.ConnectOptions };
 
@@ -9,14 +9,28 @@ export async function tunnelClient(opts: Opts): Promise<void> {
 
 	const tunnel = timeout(await Deno.connect(opts.server));
 
-	tunnel.write(new TextEncoder().encode(opts.server.pwd.padEnd(10)));
-	const buf = new Uint8Array(4);
-	const res = await readAll(tunnel, buf);
+	try {
+		await writeAll(tunnel, new TextEncoder().encode(opts.server.pwd.padEnd(10)));
+	} catch {
+		close(tunnel);
+		console.log("tunnel :: auth failed");
+		return;
+	}
 
-	if (res === null) {
-		console.log("tunnel :: unable to reserve, retrying...");
-		await sleep(500);
-		return tunnelClient(opts);
+	const buf = new Uint8Array(4);
+
+	try {
+		const res = await readAll(tunnel, buf);
+
+		if (res === null) {
+			close(tunnel);
+			console.log("tunnel :: unable to reserve");
+			return;
+		}
+	} catch {
+		close(tunnel);
+		console.log("tunnel :: could not read auth response");
+		return;
 	}
 
 	const idx = new TextDecoder().decode(buf);
@@ -44,8 +58,8 @@ export async function tunnelClient(opts: Opts): Promise<void> {
 
 	close(tunnel, mc);
 
-	await sleep(500);
-	return tunnelClient(opts);
+	console.log("tunnel :: connection closed");
+	return;
 }
 
 export async function proxyClient(opts: Opts): Promise<void> {
@@ -55,21 +69,36 @@ export async function proxyClient(opts: Opts): Promise<void> {
 
 	const proxy = timeout(await Deno.connect(opts.server));
 
-	proxy.write(new TextEncoder().encode(opts.server.pwd.padEnd(10)));
+	try {
+		await writeAll(proxy, new TextEncoder().encode(opts.server.pwd.padEnd(10)));
+	} catch {
+		close(proxy);
+		console.log("proxy :: auth failed");
+		return;
+	}
+
 	const buf = new Uint8Array(4);
 	const res = await readAll(proxy, buf);
 
 	if (res === null) {
-		console.log("proxy :: unable to reserve, retrying...");
-		throw new Error("Connection closed");
+		console.log("proxy :: unable to reserve");
+		return;
 	}
 
 	const idx = new TextDecoder().decode(buf);
 
 	console.log("proxy :: connected to server, slot", idx);
 
-	// listen for MC client to connect
-	const server = await Deno.listen(opts.minecraft);
+	let server: Deno.Listener;
+
+	try {
+		// listen for MC client to connect
+		server = await Deno.listen(opts.minecraft);
+	} catch {
+		close(proxy);
+		console.log("proxy :: could not listen for Minecraft");
+		return;
+	}
 
 	console.log("proxy :: ready for Minecraft to connect");
 
@@ -85,6 +114,6 @@ export async function proxyClient(opts: Opts): Promise<void> {
 		console.log("proxy :: errored, closing proxy", idx);
 	} finally {
 		close(server, mc, proxy);
-		throw new Error("Connection closed");
+		return;
 	}
 }

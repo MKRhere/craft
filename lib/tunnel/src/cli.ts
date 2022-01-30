@@ -110,7 +110,8 @@ async function main(): Promise<void> {
 			});
 		} catch (e) {
 			console.error(e);
-			console.log("proxy closed, restarting...");
+		} finally {
+			console.log("proxy :: restarting...");
 			await sleep(500);
 			return main();
 		}
@@ -122,10 +123,18 @@ async function main(): Promise<void> {
 			.forEach(async (_, i) => {
 				await sleep(500 * i);
 
-				tunnelClient({
-					server: { port: args["--server"][1], hostname: args["--server"][0], pwd: args["--pwd"] },
-					minecraft: { port: args["--port"] },
-				});
+				try {
+					await tunnelClient({
+						server: { port: args["--server"][1], hostname: args["--server"][0], pwd: args["--pwd"] },
+						minecraft: { port: args["--port"] },
+					});
+				} catch (e) {
+					console.error(e);
+				} finally {
+					console.log("tunnel :: restarting...");
+					await sleep(500);
+					return main();
+				}
 			});
 	}
 }
